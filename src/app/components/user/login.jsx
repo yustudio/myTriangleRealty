@@ -25,7 +25,8 @@ class UserLogin extends Component {
             if (data.payload.errorCode) {
                 this.setState({ message: data.payload.errorMessage });
             } else {
-                browserHistory.push('/profile');
+                //browserHistory.push('/profile');
+                browserHistory.push('/expenses');
             }
         }
     );
@@ -36,7 +37,8 @@ class UserLogin extends Component {
             if (data.payload.errorCode) {
                 this.setState({ message: data.payload.errorMessage });
             } else {
-                browserHistory.push('/profile');
+                //browserHistory.push('/profile');
+                browserHistory.push('/expenses');
             }
         });
     }
