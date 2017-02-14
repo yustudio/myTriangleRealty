@@ -18,10 +18,16 @@ class Expenses extends Component {
 	_handleRemove(e) {
 		e.preventDefault();
 		let imageRef = this.storageRef.child('images/' + this.state.imageName);
-		imageRef.delete().then(function() {
+		imageRef.delete().then(() => {
 			console.log("Removed images")
+		}).then(() => {
+			let dbRef = this.dbRef.child('expenses/' + this.state.dbKey);
+			dbRef.remove().then(() => {
+				console.log("Removed db record")
+			})
+		}).catch((error) => {
+			console.log("Error occured during remove: ", error.message);
 		})
-
 	}
 
 	//Zip download
@@ -70,20 +76,20 @@ class Expenses extends Component {
 		let dbKey = this.dbRef.child("expenses").push().key;
 		this.state.dbKey = JSON.stringify(dbKey);
 		let update = {};
-		update['guests/' + this.state.dbKey] = this.state;
+		update['expenses/' + this.state.dbKey] = this.state;
 
 		return this.dbRef.update(update);
 	}
 
 	_handleImageSelect(e) {
 
-		let that = this;
+		//let that = this;
 
 		e.preventDefault();
 		let file = e.target.files[0];
 
 		this.state.imageName = file.name;
-		let uploadTask = that.storageRef.child('images/' + file.name).put(file);
+		let uploadTask = this.storageRef.child('images/' + file.name).put(file);
 
 		//Setting this methods: http://stackoverflow.com/questions/39191001/setstate-with-firebase-promise-in-react
 		uploadTask.on('state_changed', (snapshot) => {				
