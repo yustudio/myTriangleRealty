@@ -4,22 +4,75 @@ import {firebaseStorage, firebaseDb} from '../../utils/firebase';
 class Expenses extends Component {
 	constructor() {
 		super();
-		this.state = {file: '', imageUrl: '', progress: 0};					
+		this.state = {dbKey: '', imageUrl: '', loading: false, imageName: ''};					
 	}
 
 	componentDidMount() {		
 		// this.state.storageRef = firebase.storage().ref();
 		// this.state.imgRef = stroageRef.child('images/test1.jpg');
 		this.storageRef = firebaseStorage.ref();
-		this.dbRef = firebaseDb.ref('/'+"guests");
+		this.dbRef = firebaseDb.ref();
 			
 	}
 
+	_handleRemove(e) {
+		e.preventDefault();
+		let imageRef = this.storageRef.child('images/' + this.state.imageName);
+		imageRef.delete().then(function() {
+			console.log("Removed images")
+		})
+
+	}
+
+	//Zip download
+	//http://stackoverflow.com/questions/37176397/multiple-download-links-to-one-zip-file-before-download-javascript/
+
+	// _handleDownload(e) {
+	// 	e.preventDefault();
+
+	// 	// This can be downloaded directly:
+	// 	  var xhr = new XMLHttpRequest();
+	// 	  xhr.responseType = 'blob';
+	// 	  xhr.onload = function(event) {
+	// 	    var blob = xhr.response;
+	// 	  };
+	// 	  xhr.open('GET', this.state.imageUrl);
+	// 	  xhr.send();
+
+	// 	// var starsRef = firebaseStorage.ref('images/WIN_20160208_212136.JPG');
+
+	// 	// // Get the download URL
+	// 	// starsRef.getDownloadURL().then(function(url) {
+	// 	// 	console.log("url is", url)
+	// 	// 	setTimeout(() => {
+	// 	// 	window.open(url, "_blank")
+	// 	// }, 100)
+	// 	//   // Insert url into an <img> tag to "download"
+	// 	// })
+
+	// 	// setTimeout(() => {
+	//  //      const response = {
+	//  //        file: this.state.imageUrl
+	//  //      };
+	//  //      // server sent the url to the file!
+	//  //      // now, let's download:
+	//  //      //window.location.href = response.file;
+	//  //      // you could also do:
+	//  //       window.open(response.file, _blank);
+	//  //    }, 100);
+	// }
+
 	_handleSubmit(e) {
 		e.preventDefault();
-		this.dbRef.push(this.state).then(()=>{
-			console.log("Added expense")
-		})
+		// this.dbRef.push(this.state).then(()=>{
+		// 	console.log("Added expense")
+		// })
+		let dbKey = this.dbRef.child("expenses").push().key;
+		this.state.dbKey = JSON.stringify(dbKey);
+		let update = {};
+		update['guests/' + this.state.dbKey] = this.state;
+
+		return this.dbRef.update(update);
 	}
 
 	_handleImageSelect(e) {
@@ -29,15 +82,18 @@ class Expenses extends Component {
 		e.preventDefault();
 		let file = e.target.files[0];
 
+		this.state.imageName = file.name;
 		let uploadTask = that.storageRef.child('images/' + file.name).put(file);
 
 		//Setting this methods: http://stackoverflow.com/questions/39191001/setstate-with-firebase-promise-in-react
-		uploadTask.on('state_changed', (snapshot) => {
-				var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+		uploadTask.on('state_changed', (snapshot) => {				
+				//var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
 				var downloadURL = uploadTask.snapshot.downloadURL;
 			    this.state.imageUrl = downloadURL;
-			    this.state.progress = progress;
-			    console.log("download URL: ", this.state.imageUrl, " Progress: ", progress, "%");			   
+			    //this.state.progress = progress;	
+			    this.state.loading = false;		    
+			    console.log("download URL: ", this.state.imageUrl) //, " Progress: ", progress, "%");			   
+
 			}, (error) => {
 				switch (error.code) {
 			    case 'storage/unauthorized':
@@ -51,9 +107,60 @@ class Expenses extends Component {
 			      console.log("Unknown error occurred, inspect error.serverResponse");
 			      break;
 			  }
-			})
+			})		
+	}
 
-		// uploadTask.on('state_changed', //this.storageRef.TaskEvent.STATE_CHANGED, // or 'state_changed'
+
+
+	render() {
+		
+		return (
+			<div className="row">
+              <div className="col-lg-4">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => console.log("Going to credit card1")}//this.props.onAddToInvite(this.state.name)}
+                >
+                  Credit Card1
+                </button>
+              </div>
+	          <div className="col-lg-4">
+	            <form onSubmit={(e)=>this._handleSubmit(e)}>
+	        		<input className="fileInput" type="file" onChange={(e)=>this._handleImageSelect(e)} />
+	        		                                
+					{
+						this.state.loading ? (
+						<span>Loading...</span>
+						) : null
+					}	        		                                
+	                {/*<progress value="0" max="100" id="uploader">{this.state.progress}</progress>*/}
+	                {/*<input type="file" value="upload" id="fileButton" />*/}
+
+	               {/*} {this.state.progress === 100 ? (  */}
+		                <button className="submitButton" type="submit" onClick={(e)=>this._handleSubmit(e)}> 
+		        			Submit 
+		        		</button> 		        		
+	        		{/* ) : null}  */}
+	        		{/*}	<button className="downloadButton" type="submit" onClick={(e)=>this._handleDownload(e)}> 
+		        			Download
+		        		</button>       	*/}
+				        		
+		        		<a href="https://firebasestorage.googleapis.com/v0/b/trianglerealty-7618d.appspot.com/o/images%2FWIN_20160210_123851.JPG?alt=media&token=da49df01-459c-4145-b60c-077eee6290ed" download> download </a>
+	        			<button className="removeButton" type="submit" onClick={(e)=>this._handleRemove(e)}> 
+		        			Remove
+		        		</button>
+	            </form>
+	          </div>
+          </div>
+		)
+	}
+}
+
+export default Expenses;
+
+
+// uploadTask.on('state_changed', //this.storageRef.TaskEvent.STATE_CHANGED, // or 'state_changed'
 		//   function(snapshot) {
 		//     // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
 		//     var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
@@ -86,40 +193,3 @@ class Expenses extends Component {
 		// 	  console.log("download URL: ", this.state.imageUrl);
 		// 	}
 		// );
-	}
-
-
-
-	render() {
-		
-		return (
-			<div className="row">
-              <div className="col-lg-4">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={() => console.log("Going to credit card1")}//this.props.onAddToInvite(this.state.name)}
-                >
-                  Credit Card1
-                </button>
-              </div>
-	          <div className="col-lg-4">
-	            <form onSubmit={(e)=>this._handleSubmit(e)}>
-	        		<input className="fileInput" type="file" onChange={(e)=>this._handleImageSelect(e)} />
-	        		                                
-	                <progress value="0" max="100" id="uploader">0%</progress>
-	                {/*<input type="file" value="upload" id="fileButton" />*/}
-
-	               {/*} {this.state.progress === 100 ? (  */}
-		                <button className="submitButton" type="submit" onClick={(e)=>this._handleSubmit(e)}> 
-		        			Submit 
-		        		</button> 
-	        		{/* ) : null}  */}
-	            </form>
-	          </div>
-          </div>
-		)
-	}
-}
-
-export default Expenses;
