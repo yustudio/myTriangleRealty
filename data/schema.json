@@ -33,14 +33,14 @@
 		}
 	]
 
-	"expense" : [
+	"expenses" : [
 		{		
 			"date": "",
 			"description" : "",
 			"checkNumber": 0,  // only if paymentAcct.paymentType is checkingAcct
 			"amount" : 0,
-			"property" : "", // uid from properties
-			"vehicle" : "", // uid from vehicles
+			"property" : "", // uid from properties (xor with vehicle)
+			"vehicle" : "", // uid from vehicles (xor with property)
 			"paymentAcct" : ""  // uid from paymentAccts
 			"receipts": [
 				"img" : ""
@@ -53,6 +53,7 @@
 		{
 			"date": "",
 			"description" : "",
+			"property" : "", // uid from properties
 			"vehicle" : "", // uid from vehicles
 			"starting" : 0,
 			"ending" : 0,

@@ -11,7 +11,7 @@
     "test:watch": "npm run test -- --watch",
     "lint": "./node_modules/.bin/eslint src"
   },
-  "author": "Desong Yu", 
+  "author": "Desong Yu",
   "keywords": [
     "ReactJS",
     "Redux",
@@ -35,7 +35,6 @@
     "eslint-plugin-jsx-a11y": "^2.2.2",
     "eslint-plugin-react": "^6.3.0",
     "extract-text-webpack-plugin": "^1.0.1",
-    "file-loader": "^0.9.0",
     "html-webpack-plugin": "^2.21.0",
     "imports-loader": "^0.6.5",
     "jquery": "^3.1.0",
