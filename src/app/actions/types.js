@@ -19,3 +19,4 @@ export const REMOVE_EXPENSE = 'REMOVE_EXPENSE';
 export const ADD_NOTES = 'ADD_NOTES';
 export const ADD_NOTES_FAILURE = 'ADD_NOTES_FAILURE';
 export const ADD_EXPENSE_DBKEY = 'ADD_EXPENSE_DBKEY';
+export const ADD_DATE = 'ADD_DATE';

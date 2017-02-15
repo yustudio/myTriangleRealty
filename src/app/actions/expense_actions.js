@@ -5,8 +5,16 @@ import {
   SELECT_IMAGE,
   ADD_IMAGE,
   REMOVE_EXPENSE,
+  ADD_DATE,
 } from './types';
 import {firebaseStorage, firebaseDb} from '../utils/firebase';
+
+export function addDate(date) {
+	return {
+		type: ADD_DATE,
+		date
+	}
+}
 
 export function addNotes(notes) {
 	return {		

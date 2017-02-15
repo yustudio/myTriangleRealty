@@ -1,15 +1,15 @@
 import { connect } from 'react-redux';
 import React, {Component} from 'react';
 import {firebaseStorage, firebaseDb} from '../../utils/firebase';
-import { addNotes, addExpense, addImage, removeExpense } from '../../actions/expense_actions'
+import { addNotes, addExpense, addImage, removeExpense, addDate } from '../../actions/expense_actions'
 
 function mapStateToProps(state) {
-	console.log("State is: ", JSON.stringify(state));
+	
+	const { dbKey, date, notes, imageUrl, loading, imageName } = state.expense;
 
-	const { dbKey, notes, imageUrl, loading, imageName } = state.expense;
-
-	return {
+	return {	
 		dbKey,
+		date,
 		notes,
 		imageUrl,
 		loading,
@@ -30,6 +30,9 @@ function mapDispatchToProps(dispatch) {
 		},
 		onRemoveExpense: () => {
 			dispatch(removeExpense())
+		},
+		onAddDate: (date) => {
+			dispatch(addDate(date))
 		}
 	}
 }
@@ -37,7 +40,7 @@ function mapDispatchToProps(dispatch) {
 class Expenses extends Component {
 	constructor() {
 		super();
-		this.state = {dbKey: '', notes: '', imageUrl: '', loading: false, imageName: ''};					
+		//this.state = {dbKey: '', notes: '', imageUrl: '', loading: false, imageName: ''};					
 	}
 
 	componentDidMount() {				
@@ -94,36 +97,15 @@ class Expenses extends Component {
 	_handleImageSelect(e) {
 
 		e.preventDefault();
-		// this.state.loading = true;
-		// let file = e.target.files[0];
-		// this.state.imageName = file.name;
+		
 		let file = e.target.files[0];
-		this.props.onAddImage(file);
+		this.props.onAddImage(file);							
+	}
 
-		//this.storageRef.child('images/' + file.name).put(file)
-		// firebaseStorage.ref('images/' + file.name).put(file)
-		// 	.then((snapshot) => {				
-		// 		//var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-		// 		var downloadURL = snapshot.downloadURL;
-		// 	    this.state.imageUrl = downloadURL;
-		// 	    //this.state.progress = progress;	
-		// 	    this.state.loading = false;		    
-		// 	    console.log("download URL: ", this.state.imageUrl) //, " Progress: ", progress, "%");			   
+	_handleDateSelect(e) {
 
-		// 	}).catch((error) => {
-		// 		switch (error.code) {
-		// 	    case 'storage/unauthorized':
-		// 	      console.log("User doesn't have permission to access the object");
-		// 	      break;
-		// 	    case 'storage/canceled':
-		// 	      console.log("User canceled the upload");
-		// 	      break;		    
-		// 	    case 'storage/unknown':
-		// 	    default:
-		// 	      console.log("Unknown error occurred, inspect error.serverResponse");
-		// 	      break;
-		// 	  }
-		// 	})						
+		e.preventDefault();
+		this.props.onAddDate(e.target.value);
 	}
 
 	render() {
@@ -139,6 +121,9 @@ class Expenses extends Component {
                   Credit Card1
                 </button>
               </div>
+              <p/>
+              <p/>             
+              <label>Date: </label><input id="expenseDate" type="date" onChange={e=>this._handleDateSelect(e)}/>
 	          <div className="col-lg-4">                           
 
 	            <form onSubmit={e => this._handleSubmit(e)}>
@@ -148,7 +133,7 @@ class Expenses extends Component {
 
 	        		<input className="fileInput" type="file" onChange={(e)=>this._handleImageSelect(e)} />	        		                                
 					{
-						this.state.loading ? (
+						this.props.loading ? (
 						<span>Loading...</span>
 						) : null
 					}	        		                                

@@ -2,7 +2,7 @@ import createLogger from 'redux-logger';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import { Router, browserHistory } from 'react-router';
 import ReduxPromise from 'redux-promise';
 import thunk from 'redux-thunk';
@@ -17,11 +17,16 @@ import './bundle.scss';
 
 const logger = createLogger();
 
-const createStoreWithMiddleware = applyMiddleware(thunk, ReduxPromise, logger)(createStore);
+//const createStoreWithMiddleware = applyMiddleware(thunk, ReduxPromise, logger)(createStore);
 
+const createStoreWith = compose(applyMiddleware(thunk, ReduxPromise, logger))(createStore);
+
+const configureStore = (initialState) => {
+  return createStoreWith(reducers, initialState);
+};
 
 ReactDOM.render(
-    <Provider store={createStoreWithMiddleware(reducers)}>
+    <Provider store={configureStore()}>
         <Router history={browserHistory} routes={routes} />
     </Provider>
   , document.querySelector('.react-root'));

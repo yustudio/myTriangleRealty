@@ -5,14 +5,19 @@ import {
 	REMOVE_EXPENSE,
 	ADD_NOTES,
 	ADD_EXPENSE_DBKEY,
+	ADD_DATE,
 } from '../actions/types';
 
 export default function (state = {}, action) {
     switch (action.type) {
-	        
+	    case ADD_DATE:
+	    	return Object.assign({}, state, {
+	    		...state,
+	    		date: action.date	    		
+	    	})
 	    case REMOVE_EXPENSE:
 	        return Object.assign({}, state, {
-	    		}) 
+	    	}) 
 	    case ADD_NOTES:	    
 	    	return Object.assign({}, state, {
 	    		...state,
@@ -22,7 +27,7 @@ export default function (state = {}, action) {
 		    return Object.assign({}, state, {
 	    		...state,
 	    		dbKey: action.dbKey,
-	    		notes: null
+	    		notes: ''
 	    	}) 
 	    case SELECT_IMAGE:	
 	    	return Object.assign({}, state, {
