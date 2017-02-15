@@ -12,3 +12,6 @@ function requireAuth(nextState, replace) {
 }
 
 module.exports = requireAuth;
+
+//Ref: User based security when accessing data
+//https://firebase.google.com/docs/storage/security/user-security
