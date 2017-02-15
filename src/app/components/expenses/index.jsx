@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import React, {Component} from 'react';
 import {firebaseStorage, firebaseDb} from '../../utils/firebase';
-import { addNotes, addExpense } from '../../actions/expense_actions'
+import { addNotes, addExpense, addImage, removeExpense } from '../../actions/expense_actions'
 
 function mapStateToProps(state) {
 	console.log("State is: ", JSON.stringify(state));
@@ -24,6 +24,12 @@ function mapDispatchToProps(dispatch) {
 		},
 		onSubmitExpense : () => {
 			dispatch(addExpense())
+		},
+		onAddImage: (file) => {
+			dispatch(addImage(file))
+		},
+		onRemoveExpense: () => {
+			dispatch(removeExpense())
 		}
 	}
 }
@@ -42,18 +48,19 @@ class Expenses extends Component {
 	_handleRemove(e) {
 		e.preventDefault();
 		//let imageRef = this.storageRef.child('images/' + this.state.imageName);
-		let imageRef = firebaseStorage.ref('images/' + this.state.imageName);
-		imageRef.delete().then(() => {
-			console.log("Removed images")
-		}).then(() => {
-			//let dbRef = this.dbRef.child('expenses/' + this.state.dbKey);
-			let dbRef = firebaseDb.ref('expenses/' + this.state.dbKey);
-			dbRef.remove().then(() => {
-				console.log("Removed db record")
-			})
-		}).catch((error) => {
-			console.log("Error occured during remove: ", error.message);
-		})
+		// let imageRef = firebaseStorage.ref('images/' + this.state.imageName);
+		// imageRef.delete().then(() => {
+		// 	console.log("Removed images")
+		// }).then(() => {
+		// 	//let dbRef = this.dbRef.child('expenses/' + this.state.dbKey);
+		// 	let dbRef = firebaseDb.ref('expenses/' + this.state.dbKey);
+		// 	dbRef.remove().then(() => {
+		// 		console.log("Removed db record")
+		// 	})
+		// }).catch((error) => {
+		// 	console.log("Error occured during remove: ", error.message);
+		// })
+		this.props.onRemoveExpense();
 	}
 
 	//Zip download
@@ -87,34 +94,36 @@ class Expenses extends Component {
 	_handleImageSelect(e) {
 
 		e.preventDefault();
-		this.state.loading = true;
+		// this.state.loading = true;
+		// let file = e.target.files[0];
+		// this.state.imageName = file.name;
 		let file = e.target.files[0];
-		this.state.imageName = file.name;
+		this.props.onAddImage(file);
 
 		//this.storageRef.child('images/' + file.name).put(file)
-		firebaseStorage.ref('images/' + file.name).put(file)
-			.then((snapshot) => {				
-				//var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-				var downloadURL = snapshot.downloadURL;
-			    this.state.imageUrl = downloadURL;
-			    //this.state.progress = progress;	
-			    this.state.loading = false;		    
-			    console.log("download URL: ", this.state.imageUrl) //, " Progress: ", progress, "%");			   
+		// firebaseStorage.ref('images/' + file.name).put(file)
+		// 	.then((snapshot) => {				
+		// 		//var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+		// 		var downloadURL = snapshot.downloadURL;
+		// 	    this.state.imageUrl = downloadURL;
+		// 	    //this.state.progress = progress;	
+		// 	    this.state.loading = false;		    
+		// 	    console.log("download URL: ", this.state.imageUrl) //, " Progress: ", progress, "%");			   
 
-			}).catch((error) => {
-				switch (error.code) {
-			    case 'storage/unauthorized':
-			      console.log("User doesn't have permission to access the object");
-			      break;
-			    case 'storage/canceled':
-			      console.log("User canceled the upload");
-			      break;		    
-			    case 'storage/unknown':
-			    default:
-			      console.log("Unknown error occurred, inspect error.serverResponse");
-			      break;
-			  }
-			})				
+		// 	}).catch((error) => {
+		// 		switch (error.code) {
+		// 	    case 'storage/unauthorized':
+		// 	      console.log("User doesn't have permission to access the object");
+		// 	      break;
+		// 	    case 'storage/canceled':
+		// 	      console.log("User canceled the upload");
+		// 	      break;		    
+		// 	    case 'storage/unknown':
+		// 	    default:
+		// 	      console.log("Unknown error occurred, inspect error.serverResponse");
+		// 	      break;
+		// 	  }
+		// 	})						
 	}
 
 	render() {
