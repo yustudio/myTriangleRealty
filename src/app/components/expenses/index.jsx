@@ -2,6 +2,8 @@ import { connect } from 'react-redux';
 import React, {Component} from 'react';
 import {firebaseStorage, firebaseDb} from '../../utils/firebase';
 import { addNotes, addExpense, addImage, removeExpense, addDate } from '../../actions/expense_actions'
+import ImagesList from './images_list';
+import { browserHistory } from 'react-router';
 
 function mapStateToProps(state) {
 	
@@ -39,65 +41,27 @@ function mapDispatchToProps(dispatch) {
 
 class Expenses extends Component {
 	constructor() {
-		super();
-		//this.state = {dbKey: '', notes: '', imageUrl: '', loading: false, imageName: ''};					
+		super();		
 	}
 
-	componentDidMount() {				
-		// this.storageRef = firebaseStorage.ref();
-		// this.dbRef = firebaseDb.ref();			
+	componentDidMount() {		
 	}
 
-	_handleRemove(e) {
-		e.preventDefault();
-		//let imageRef = this.storageRef.child('images/' + this.state.imageName);
-		// let imageRef = firebaseStorage.ref('images/' + this.state.imageName);
-		// imageRef.delete().then(() => {
-		// 	console.log("Removed images")
-		// }).then(() => {
-		// 	//let dbRef = this.dbRef.child('expenses/' + this.state.dbKey);
-		// 	let dbRef = firebaseDb.ref('expenses/' + this.state.dbKey);
-		// 	dbRef.remove().then(() => {
-		// 		console.log("Removed db record")
-		// 	})
-		// }).catch((error) => {
-		// 	console.log("Error occured during remove: ", error.message);
-		// })
+	_handleRemove(e) {		
+		e.preventDefault();		
 		this.props.onRemoveExpense();
 	}
 
-	//Zip download
+	//Zip download images
 	//http://stackoverflow.com/questions/37176397/multiple-download-links-to-one-zip-file-before-download-javascript/
 
-	// _handleNotesChange(e) {
-	// 	this.setState({notes: e.target.value});
-	// }
-
-
 	_handleSubmit(e) {
-		e.preventDefault();
-		// this.dbRef.push(this.state).then(()=>{
-		// 	console.log("Added expense")
-		// })
-		//let dbKey = this.dbRef.child("expenses").push().key;
-
-		// // Save the key inside expense state to be used 
-		// let dbKey = firebaseDb.ref("expenses").push().key;
-		// this.state.dbKey = dbKey; //JSON.stringify(dbKey);		
-		// let update = {};
-		// update['expenses/' + this.state.dbKey] = this.state;
-
-		// this.state.notes = '';
-
-		// //return this.dbRef.update(update);
-		// return firebaseDb.ref().update(update);
-		this.props.onSubmitExpense();
+		e.preventDefault();		
+		this.props.onSubmitExpense();			
 	}
 
 	_handleImageSelect(e) {
-
-		e.preventDefault();
-		
+		e.preventDefault();		
 		let file = e.target.files[0];
 		this.props.onAddImage(file);							
 	}
@@ -128,13 +92,19 @@ class Expenses extends Component {
               </div>
 	          <div className="col-lg-12">                           
 
-	            <form onSubmit={e => this._handleSubmit(e)}>
+	            <form onSubmit={e => this._handleSubmit(e).bind(this)}>
 
-	            	<label>Notes:  </label><input type="text" value={this.props.notes} 
-	            			onChange={e => this.props.onNotesUpdate(e.target.value)} />	                 
-
-	        		<div><label>Images:  </label></div>
-	        		<input className="fileInput" type="file" onChange={(e)=>this._handleImageSelect(e)} />	        		                                
+	            	<label>Notes:  </label>
+	            		<input type="text" value={this.props.notes} 
+	            			onChange={e => this.props.onNotesUpdate(e.target.value)} 
+	            			ref="note"
+	            			/>	                 
+	        		<div>
+		        		<label>Images:  </label>	        		
+		        		<input className="fileInput" type="file" onChange={(e)=>this._handleImageSelect(e)} />	        		                                
+		        		{/*<img className="receipt-img" src={this.props.imageUrl[0]} />*/}
+		        		<ImagesList imageUrls={this.props.imageUrl} imageName={this.props.imageName} />
+	        		</div>
 					{
 						this.props.loading ? (
 						<span>Loading...</span>
@@ -153,7 +123,7 @@ class Expenses extends Component {
 		        			Download
 		        		</button>       	*/}
 				        		
-		        		<a href="https://firebasestorage.googleapis.com/v0/b/trianglerealty-7618d.appspot.com/o/images%2FWIN_20160210_123851.JPG?alt=media&token=da49df01-459c-4145-b60c-077eee6290ed" download> download </a>
+		        		{/*<a href="https://firebasestorage.googleapis.com/v0/b/trianglerealty-7618d.appspot.com/o/images%2FWIN_20160210_123851.JPG?alt=media&token=da49df01-459c-4145-b60c-077eee6290ed" download> download </a>*/}
 	        			<button className="removeButton" type="submit" onClick={(e)=>this._handleRemove(e)}> 
 		        			Remove
 		        		</button>

@@ -35,11 +35,13 @@ export function addExpense() {
 		let update = {};
 		update['expenses/' + dbKey] = getState().expense;		
 		
-		firebaseDb.ref().update(update).then(
-			{		
+		firebaseDb.ref().update(update).then(() => 
+			dispatch({		
 				type: ADD_EXPENSE,
-				dbKey
-			}
+				dbKey,
+				notes: '',
+				imageUrl: []
+			})
 		).catch((e) => {
 			console.log(e.message)
 		});		
@@ -58,9 +60,12 @@ export function addImage(file) {
 				let downloadUrl = snapshot.downloadURL;			    
 			    console.log("download URL: ", downloadUrl) //, " Progress: ", progress, "%");			   
 
+			    console.log(getState().expense)
+			    getState().expense.imageUrl.push(downloadUrl);			    
+
 			    dispatch({
 		    		type: ADD_IMAGE,
-		    		imageUrl: downloadUrl			    	
+		    		imageUrl: getState().expense.imageUrl
 			    })
 
 			}).catch((error) => {
@@ -73,7 +78,7 @@ export function addImage(file) {
 			      break;		    
 			    case 'storage/unknown':
 			    default:
-			      console.log("Unknown error occurred, inspect error.serverResponse");
+			      console.log("Unknown error occurred, inspect error.serverResponse: " + error.serverResponse);
 			      break;
 			  }
 			})	
@@ -81,19 +86,14 @@ export function addImage(file) {
 }
 
 function removeDbExpense(dbKey) {
-
-	//console.log(JSON.stringify(dbKey, null, 2))
-				
-	let dbRef = firebaseDb.ref('expenses/' + dbKey);
+			
+	let dbRef = firebaseDb.ref('expense/' + dbKey);
 	dbRef.remove().then(() => {
 		console.log("Removed db record")
 		return {
 			type: REMOVE_EXPENSE,
 			note: ''
-		}
-		// dispatch({
-		// 	type: REMOVE_EXPENSE
-		// })					
+		}					
 	}).catch((error) => {
 		console.log("Error occured during remove: ", error.message);
 	})

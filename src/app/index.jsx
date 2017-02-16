@@ -17,6 +17,8 @@ import './bundle.scss';
 
 const logger = createLogger();
 
+let initialState = {expense: {notes: '', imageUrl: []}};
+
 //const createStoreWithMiddleware = applyMiddleware(thunk, ReduxPromise, logger)(createStore);
 
 const createStoreWith = compose(applyMiddleware(thunk, ReduxPromise, logger))(createStore);
@@ -26,7 +28,7 @@ const configureStore = (initialState) => {
 };
 
 ReactDOM.render(
-    <Provider store={configureStore()}>
+    <Provider store={configureStore(initialState)}>
         <Router history={browserHistory} routes={routes} />
     </Provider>
   , document.querySelector('.react-root'));
