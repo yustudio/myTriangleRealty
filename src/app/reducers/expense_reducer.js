@@ -17,7 +17,8 @@ export default function (state = {}, action) {
 	    	})
 	    case REMOVE_EXPENSE:
 	        return Object.assign({}, state, {
-	    	}) 
+	        	notes: ''	    		
+	    	})
 	    case ADD_NOTES:	    
 	    	return Object.assign({}, state, {
 	    		...state,

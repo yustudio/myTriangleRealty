@@ -36,7 +36,7 @@
 	"expenses" : [
 		{		
 			"date": "",
-			"description" : "",		
+			"note" : "",		
 			"amount" : 0,
 			"property" : "", // uid from properties (xor with vehicle)
 			"vehicle" : "", // uid from vehicles (xor with property)

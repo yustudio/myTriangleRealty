@@ -10,6 +10,7 @@ import {
 import {firebaseStorage, firebaseDb} from '../utils/firebase';
 
 export function addDate(date) {
+	console.log()
 	return {
 		type: ADD_DATE,
 		date
@@ -79,22 +80,42 @@ export function addImage(file) {
 	}	
 }
 
+function removeDbExpense(dbKey) {
+
+	//console.log(JSON.stringify(dbKey, null, 2))
+				
+	let dbRef = firebaseDb.ref('expenses/' + dbKey);
+	dbRef.remove().then(() => {
+		console.log("Removed db record")
+		return {
+			type: REMOVE_EXPENSE,
+			note: ''
+		}
+		// dispatch({
+		// 	type: REMOVE_EXPENSE
+		// })					
+	}).catch((error) => {
+		console.log("Error occured during remove: ", error.message);
+	})
+}
+
 export function removeExpense() {
 	return (dispatch, getState) => {
-		let imageRef = firebaseStorage.ref('images/' + getState().expense.imageName);
+
+		const dbKey = getState().expense.dbKey;
+		const imageName = getState().expense.imageName;
+		//console.log("dbKey is: ", key)
+
+		if (getState().expense.hasOwnProperty("imageUrl")) {
+			let imageRef = firebaseStorage.ref('images/' + imageName);
 			imageRef.delete().then(() => {
 				console.log("Removed images")
-			}).then(() => {
-				//let dbRef = this.dbRef.child('expenses/' + this.state.dbKey);
-				let dbRef = firebaseDb.ref('expenses/' + getState().expense.dbKey);
-				dbRef.remove().then(() => {
-					console.log("Removed db record")
-					dispatch({
-						type: REMOVE_EXPENSE
-					})					
-				})
-			}).catch((error) => {
-				console.log("Error occured during remove: ", error.message);
-			})
+				// Don't call dispatch: https://github.com/gaearon/redux-thunk/issues/29
+				removeDbExpense(dbKey);
+			})			
+		} else {
+			removeDbExpense(dbKey);
 		}
+	}
+
 }

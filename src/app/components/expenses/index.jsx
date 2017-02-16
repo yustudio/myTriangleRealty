@@ -19,10 +19,10 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
 	return {
-		onNotesUpdate : (notes) => {
+		onNotesUpdate: (notes) => {
 			dispatch(addNotes(notes))
 		},
-		onSubmitExpense : () => {
+		onSubmitExpense: () => {
 			dispatch(addExpense())
 		},
 		onAddImage: (file) => {
@@ -122,15 +122,18 @@ class Expenses extends Component {
                 </button>
               </div>
               <p/>
-              <p/>             
-              <label>Date: </label><input id="expenseDate" type="date" onChange={e=>this._handleDateSelect(e)}/>
-	          <div className="col-lg-4">                           
+              <p/> 
+              <div className="col-lg-12">            
+              <label>Date:  </label><input id="expenseDate" type="date" onChange={e=>this._handleDateSelect(e)}/>
+              </div>
+	          <div className="col-lg-12">                           
 
 	            <form onSubmit={e => this._handleSubmit(e)}>
 
-	            	<input type="text" value={this.props.notes} 
+	            	<label>Notes:  </label><input type="text" value={this.props.notes} 
 	            			onChange={e => this.props.onNotesUpdate(e.target.value)} />	                 
 
+	        		<div><label>Images:  </label></div>
 	        		<input className="fileInput" type="file" onChange={(e)=>this._handleImageSelect(e)} />	        		                                
 					{
 						this.props.loading ? (
@@ -141,6 +144,7 @@ class Expenses extends Component {
 	                {/*<input type="file" value="upload" id="fileButton" />*/}
 
 	               {/*} {this.state.progress === 100 ? (  */}
+	                	<p/>
 		                <button className="submitButton" type="submit" onClick={(e)=>this._handleSubmit(e)}> 
 		        			Submit 
 		        		</button> 		        		
