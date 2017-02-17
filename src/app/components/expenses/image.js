@@ -6,7 +6,7 @@ const Image = ({image, removeImage}) => (
 			<td>			
 				<img className="receipt-img" src={image.url} alt={'image'} />
 				{/*<a href={image.url} download> download </a><br/>*/}
-				<button className="remove-comment"
+				<button type="button" className="remove-comment"
 					onClick={()=>removeImage(image.storageName)}
 					>remove</button>
 				<div>{image.storageName}</div>				
