@@ -6,7 +6,7 @@ const Image = ({image}) => (
 			<td>			
 				<img className="receipt-img" src={image.url} alt={'image'} />
 				<a href={image.url} download> download </a>
-				<div>{image.name}</div>
+				<div>{image.storageName}</div>
 			</td>
 		</tr>
 	

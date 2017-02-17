@@ -62,7 +62,7 @@ class Expenses extends Component {
 
 	_handleImageSelect(e) {
 		e.preventDefault();			
-		this.props.onAddImage(e.target.files[0]);  //TODO: process multiple files
+		this.props.onAddImage(e.target.files);
 	}
 
 	_handleDateSelect(e) {

@@ -7,6 +7,9 @@ module.exports = (options) => {
   const ExtractSASS = new ExtractTextPlugin(`/styles/${options.cssFileName}`);
 
   const webpackConfig = {
+    node: {
+      fs: "empty"
+    },    
     devtool: options.devtool,
     entry: [
       `webpack-dev-server/client?http://localhost:${+options.port}`,

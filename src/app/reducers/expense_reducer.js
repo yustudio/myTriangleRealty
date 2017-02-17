@@ -6,6 +6,7 @@ import {
 	ADD_NOTES,
 	ADD_EXPENSE_DBKEY,
 	ADD_DATE,
+	RESET_EXPENSE,
 } from '../actions/types';
 
 export default function (state = {}, action) {
@@ -26,11 +27,16 @@ export default function (state = {}, action) {
 	    	})	
 	    case ADD_EXPENSE: 
 		    return Object.assign({}, state, {
+	    		...state,	    		
+	    		images: action.images
+	    	}) 
+	    case RESET_EXPENSE:
+	    	return {
 	    		...state,
 	    		dbKey: action.dbKey,
 	    		notes: action.notes,
 	    		images: action.images
-	    	}) 
+	    	}
 	    case SELECT_IMAGE:	
 	    	return Object.assign({}, state, {
 	    		...state,
@@ -39,11 +45,17 @@ export default function (state = {}, action) {
 	    	}) 
 	    case ADD_IMAGE:	 
 	    {   
+	    	console.log(state)
 	    	let newImages = [];
-	    	for (const image of state.images) {
-	    		newImages.push(image);
-	    	}
-	    	newImages.push(action.image);
+	    	// for (const image of state.images) {
+	    	// 	newImages.push(image);
+	    	// }
+
+	    	newImages = [
+	    		...newImages,
+	    		...state.images,
+	    		...action.images
+	    	]  	
 
 	    	return Object.assign({}, state, {
 	    		...state,
