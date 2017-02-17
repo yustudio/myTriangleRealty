@@ -36,13 +36,13 @@ export default function (state = {}, action) {
 	    	return Object.assign({}, state, {
 	    		...state,
 	    		loading: true,
-	    		imageName: action.imageName
+	    		//images: action.imageName
 	    	}) 
 	    case ADD_IMAGE:
 	    	return Object.assign({}, state, {
 	    		...state,
 	    		loading: false,
-	    		imageUrl: action.imageUrl
+	    		images: action.images
 	    	}) 
 	    case ADD_EXPENSE_DBKEY:
 	    	return Object.assign({}, state, {

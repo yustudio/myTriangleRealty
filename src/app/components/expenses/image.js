@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
 
-const Image = ({imageUrl}) => (
+const Image = ({image}) => (
 		
 		<tr>
 			<td>			
-				<img className="receipt-img" src={imageUrl} alt={'image'} />
-				<a href={imageUrl} download> download </a>
+				<img className="receipt-img" src={image.url} alt={'image'} />
+				<a href={image.url} download> download </a>
+				<div>{image.name}</div>
 			</td>
 		</tr>
 	

@@ -17,7 +17,7 @@ import './bundle.scss';
 
 const logger = createLogger();
 
-let initialState = {expense: {notes: '', imageUrl: []}};
+let initialState = {expense: {notes: '', images: []}};
 
 //const createStoreWithMiddleware = applyMiddleware(thunk, ReduxPromise, logger)(createStore);
 

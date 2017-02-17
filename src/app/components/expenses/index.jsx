@@ -7,15 +7,14 @@ import { browserHistory } from 'react-router';
 
 function mapStateToProps(state) {
 	
-	const { dbKey, date, notes, imageUrl, loading, imageName,  } = state.expense;
+	const { dbKey, date, notes, loading, images } = state.expense;
 
 	return {	
 		dbKey,
 		date,
-		notes,
-		imageUrl,
+		notes,		
 		loading,
-		imageName		
+		images	
 	}
 }
 
@@ -58,7 +57,7 @@ class Expenses extends Component {
 	_handleSubmit(e) {
 		e.preventDefault();		
 		this.props.onSubmitExpense();
-		this.refs.fileName.value=''			
+		this.refs.fileName.value='';			
 	}
 
 	_handleImageSelect(e) {
@@ -101,10 +100,10 @@ class Expenses extends Component {
 	            			ref="note"
 	            			/>	                 
 	        		<div>
-		        		<label>Images:  </label>	        		
+		        		<label>Images: </label>	        		
 		        		<input ref="fileName" className="fileInput" type="file" onChange={(e)=>this._handleImageSelect(e)} />	        		                                
 		        		{/*<img className="receipt-img" src={this.props.imageUrl[0]} />*/}
-		        		<ImagesList imageUrls={this.props.imageUrl} imageName={this.props.imageName} />
+		        		<ImagesList images={this.props.images} />
 	        		</div>
 					{
 						this.props.loading ? (

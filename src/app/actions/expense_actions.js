@@ -53,20 +53,27 @@ export function addImage(file) {
 	return (dispatch, getState) => {
 		dispatch({
 			type: SELECT_IMAGE,
-			imageName: file.name
+			//imageName: file.name
 		});
 
 		firebaseStorage.ref('images/' + file.name).put(file)
 			.then((snapshot) => {								
 				let downloadUrl = snapshot.downloadURL;			    
 			    console.log("download URL: ", downloadUrl) //, " Progress: ", progress, "%");			   
+			        
+			    let image = {};
+			    image['url'] = downloadUrl;
+			    image['name'] = file.name;
+
+			    console.log(image)
+
+			    getState().expense.images.push(image);			    
 
 			    console.log(getState().expense)
-			    getState().expense.imageUrl.push(downloadUrl);			    
 
 			    dispatch({
 		    		type: ADD_IMAGE,
-		    		imageUrl: getState().expense.imageUrl
+		    		images: getState().expense.images
 			    })
 
 			}).catch((error) => {

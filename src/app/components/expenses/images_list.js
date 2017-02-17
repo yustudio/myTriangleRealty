@@ -2,13 +2,13 @@ import React, {Component} from 'react';
 import _ from 'lodash';
 import Image from './image';
 
-const ImagesList = ({imageUrls, imageName}) => {
+const ImagesList = ({images}) => {
 
-	const renderImageList = ()=>(_.map(imageUrls, (imageUrl, index) => {	
+	const renderImageList = ()=>(_.map(images, (image, index) => {	
 
 		return (
 			<Image key={index}
-				   imageUrl={imageUrl}
+				   image={image}
 			/>
 		)}
 	));
