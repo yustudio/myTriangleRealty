@@ -7,6 +7,7 @@ import {
 	ADD_EXPENSE_DBKEY,
 	ADD_DATE,
 	RESET_EXPENSE,
+	UPDATE_IMAGE,
 } from '../actions/types';
 
 export default function (state = {}, action) {
@@ -45,14 +46,13 @@ export default function (state = {}, action) {
 	    	}) 
 	    case ADD_IMAGE:	 
 	    {   
-	    	console.log(state)
+	    	//console.log(state)
 	    	let newImages = [];
 	    	// for (const image of state.images) {
 	    	// 	newImages.push(image);
 	    	// }
 
-	    	newImages = [
-	    		...newImages,
+	    	newImages = [	    		
 	    		...state.images,
 	    		...action.images
 	    	]  	
@@ -61,6 +61,14 @@ export default function (state = {}, action) {
 	    		...state,
 	    		loading: false,
 	    		images: newImages
+	    	}) 	    
+	    }
+	    case UPDATE_IMAGE:	 
+	    {   	    	
+	    	return Object.assign({}, state, {
+	    		...state,
+	    		loading: false,
+	    		images: action.images
 	    	}) 	    
 	    }
 	    case ADD_EXPENSE_DBKEY:

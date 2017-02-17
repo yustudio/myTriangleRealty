@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import React, {Component} from 'react';
 import {firebaseStorage, firebaseDb} from '../../utils/firebase';
-import { addNotes, addExpense, addImage, removeExpense, addDate } from '../../actions/expense_actions'
+import { addNotes, addExpense, addImage, removeExpense, addDate, removeImage } from '../../actions/expense_actions'
 import ImagesList from './images_list';
 import { browserHistory } from 'react-router';
 
@@ -34,7 +34,10 @@ function mapDispatchToProps(dispatch) {
 		},
 		onAddDate: (date) => {
 			dispatch(addDate(date))
-		}
+		},
+		removeImage: (imageName) => {
+			dispatch(removeImage(imageName))
+		},
 	}
 }
 
@@ -66,7 +69,6 @@ class Expenses extends Component {
 	}
 
 	_handleDateSelect(e) {
-
 		e.preventDefault();
 		this.props.onAddDate(e.target.value);
 	}
@@ -91,7 +93,7 @@ class Expenses extends Component {
               </div>
 	          <div className="col-lg-12">                           
 
-	            <form onSubmit={e => this._handleSubmit(e).bind(this)}>
+	            <form onSubmit={e => this._handleSubmit(e)}>
 
 	            	<label>Notes:  </label>
 	            		<input type="text" value={this.props.notes} 
@@ -103,7 +105,7 @@ class Expenses extends Component {
 		        		<input ref="fileName" className="fileInput" type="file" 
 		        			multiple="multiple" onChange={(e)=>this._handleImageSelect(e)} />	        		                                
 		        		{/*<img className="receipt-img" src={this.props.imageUrl[0]} />*/}
-		        		<ImagesList images={this.props.images} />
+		        		<ImagesList images={this.props.images} removeImage={this.props.removeImage} />
 	        		</div>
 					{
 						this.props.loading ? (
