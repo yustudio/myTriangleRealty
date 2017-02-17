@@ -40,8 +40,7 @@ export function addExpense() {
 				type: ADD_EXPENSE,
 				dbKey: '',
 				notes: '',
-				imageUrl: [],
-				imageName: ''
+				images: []
 			})
 		).catch((e) => {
 			console.log(e.message)
@@ -56,24 +55,28 @@ export function addImage(file) {
 			//imageName: file.name
 		});
 
+		// Update firebase image
 		firebaseStorage.ref('images/' + file.name).put(file)
 			.then((snapshot) => {								
 				let downloadUrl = snapshot.downloadURL;			    
 			    console.log("download URL: ", downloadUrl) //, " Progress: ", progress, "%");			   
 			        
+			    // Used to update store image
 			    let image = {};
 			    image['url'] = downloadUrl;
-			    image['name'] = file.name;
+			    image['name'] = file.name;			  
 
-			    console.log(image)
+			    // let images = [];
+			    // for (const img of getState().expense.images) {
+			    // 	console.log("img" + img)
+			    // 	images.push(imag);	
+			    // }			    
 
-			    getState().expense.images.push(image);			    
-
-			    console.log(getState().expense)
+			    //console.log(getState().expense)
 
 			    dispatch({
 		    		type: ADD_IMAGE,
-		    		images: getState().expense.images
+		    		image: image
 			    })
 
 			}).catch((error) => {

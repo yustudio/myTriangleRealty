@@ -61,9 +61,8 @@ class Expenses extends Component {
 	}
 
 	_handleImageSelect(e) {
-		e.preventDefault();		
-		let file = e.target.files[0];
-		this.props.onAddImage(file);							
+		e.preventDefault();			
+		this.props.onAddImage(e.target.files[0]);  //TODO: process multiple files
 	}
 
 	_handleDateSelect(e) {
@@ -101,7 +100,8 @@ class Expenses extends Component {
 	            			/>	                 
 	        		<div>
 		        		<label>Images: </label>	        		
-		        		<input ref="fileName" className="fileInput" type="file" onChange={(e)=>this._handleImageSelect(e)} />	        		                                
+		        		<input ref="fileName" className="fileInput" type="file" 
+		        			multiple="multiple" onChange={(e)=>this._handleImageSelect(e)} />	        		                                
 		        		{/*<img className="receipt-img" src={this.props.imageUrl[0]} />*/}
 		        		<ImagesList images={this.props.images} />
 	        		</div>

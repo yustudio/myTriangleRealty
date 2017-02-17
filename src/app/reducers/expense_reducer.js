@@ -29,8 +29,7 @@ export default function (state = {}, action) {
 	    		...state,
 	    		dbKey: action.dbKey,
 	    		notes: action.notes,
-	    		imageUrl: action.imageUrl,
-	    		imageName: action.imageName
+	    		images: action.images
 	    	}) 
 	    case SELECT_IMAGE:	
 	    	return Object.assign({}, state, {
@@ -38,12 +37,20 @@ export default function (state = {}, action) {
 	    		loading: true,
 	    		//images: action.imageName
 	    	}) 
-	    case ADD_IMAGE:
+	    case ADD_IMAGE:	 
+	    {   
+	    	let newImages = [];
+	    	for (const image of state.images) {
+	    		newImages.push(image);
+	    	}
+	    	newImages.push(action.image);
+
 	    	return Object.assign({}, state, {
 	    		...state,
 	    		loading: false,
-	    		images: action.images
-	    	}) 
+	    		images: newImages
+	    	}) 	    
+	    }
 	    case ADD_EXPENSE_DBKEY:
 	    	return Object.assign({}, state, {
 	    		...state,
