@@ -29,7 +29,8 @@ export default function (state = {}, action) {
 	    		...state,
 	    		dbKey: action.dbKey,
 	    		notes: action.notes,
-	    		imageUrl: action.imageUrl
+	    		imageUrl: action.imageUrl,
+	    		imageName: action.imageName
 	    	}) 
 	    case SELECT_IMAGE:	
 	    	return Object.assign({}, state, {

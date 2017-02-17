@@ -38,9 +38,10 @@ export function addExpense() {
 		firebaseDb.ref().update(update).then(() => 
 			dispatch({		
 				type: ADD_EXPENSE,
-				dbKey,
+				dbKey: '',
 				notes: '',
-				imageUrl: []
+				imageUrl: [],
+				imageName: ''
 			})
 		).catch((e) => {
 			console.log(e.message)
