@@ -55,7 +55,7 @@ export default function (state = {}, action) {
 	    	newImages = [	    		
 	    		...state.images,
 	    		...action.images
-	    	]  	
+	    	] 
 
 	    	return Object.assign({}, state, {
 	    		...state,

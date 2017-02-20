@@ -103,7 +103,7 @@ class Expenses extends Component {
 	        		<div>
 		        		<label>Images: </label>	        		
 		        		<input ref="fileName" className="fileInput" type="file" 
-		        			multiple="multiple" onChange={(e)=>this._handleImageSelect(e)} />	        		                                
+		        			 onChange={(e)=>this._handleImageSelect(e)} />	    {/*TODO: multiple="multiple" currently each image is set in expense action by its id.*/}
 		        		{/*<img className="receipt-img" src={this.props.imageUrl[0]} />*/}
 		        		<ImagesList images={this.props.images} removeImage={this.props.removeImage} />
 	        		</div>

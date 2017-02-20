@@ -1,4 +1,4 @@
-import Filereader from 'filereader';
+//import Filereader from 'filereader';
 import _ from 'lodash';
 
 import {
@@ -129,17 +129,11 @@ export function addExpense() {
 	}
 }
 
-export function addImage(files) {
-	return (dispatch, getState) => {
-		dispatch({
-			type: SELECT_IMAGE,
-			//imageName: file.name
-		});
-
-		//console.log(JSON.stringify(files, null, 2))
-
-
+function getImage(files) {
+	return new Promise((resolve, reject) => {
 		let images = [];
+		let reader = new FileReader();
+
 		for (const key in files) {
 			if (!files.hasOwnProperty(key)) continue; // end loop at inherite property
 
@@ -148,21 +142,81 @@ export function addImage(files) {
 			image['file'] = files[key];
 			//console.log("image " + JSON.stringify(image, null, 2))
 			
+			// reader.addEventListener("load", function() {
+			// 	image['previewUrl'] = reader.result;
+				
+			// }, false);
+
+			reader.onload = function(e) {
+				image['previewUrl'] = e.target.result;
+
+				let preview = document.querySelector('#preview');
+				let htmlImage = new Image();
+				htmlImage.height=100;
+				htmlImage.src=e.target.result;
+				preview.appendChild(htmlImage);
+			}
+
 			images = [
 				...images,
 				image
-			];
+			];		
 
-			// reader.addEventListener("load", function() {
-			// 	image['previewUrl'] = reader.result;
-			// }, false);
-
-			// if (files[key]) {
-			// 	console.log("before readAsDataURL")
-			// 	reader.readAsDataURL(files[key]);			
-			// 	console.log("after readAsDataURL")
-			// }
+			reader.readAsDataURL(files[key]);
 		}
+
+		resolve(images);
+	})
+}
+
+export function addImage(files) {
+	return (dispatch, getState) => {
+		dispatch({
+			type: SELECT_IMAGE,
+			//imageName: file.name
+		});
+
+
+		return getImage(files).then(images => 
+		
+
+		// let reader = new FileReader();
+
+		// let images = [];
+		// for (const key in files) {
+		// 	if (!files.hasOwnProperty(key)) continue; // end loop at inherite property
+
+		// 	let image = {};
+		// 	image['storageName'] = files[key].name;   // TODO, add right format for date to file name
+		// 	image['file'] = files[key];
+		// 	//console.log("image " + JSON.stringify(image, null, 2))
+			
+		// 	// reader.addEventListener("load", function() {
+		// 	// 	image['previewUrl'] = reader.result;				
+		// 	// }, false);
+
+		// 	reader.onload = function(e) {
+		// 		image['previewUrl'] = e.target.result;
+		// 	}
+
+		// 	images = [
+		// 		...images,
+		// 		image
+		// 	];		
+
+		// 	reader.readAsDataURL(files[key]);
+		// 	//reader.readAsArrayBuffer(files[key]);
+
+		// 	// reader.addEventListener("load", function() {
+		// 	// 	image['previewUrl'] = reader.result;
+		// 	// }, false);
+
+		// 	// if (files[key]) {
+		// 	// 	console.log("before readAsDataURL")
+		// 	// 	reader.readAsDataURL(files[key]);			
+		// 	// 	console.log("after readAsDataURL")
+		// 	// }
+		// }
 
 
 		// function readAndPreview(file){
@@ -174,13 +228,15 @@ export function addImage(files) {
 		// 	// file.stream = 'test';
 		// 	// file.buffer = 'test';
 
-		// 	let reader = new Filereader();
-		// 	reader.addEventListener("load", function() {
-		// 		images[0]['previewUrl'] = this.result;
-		// 	}, false);
+		 // 	let reader = new FileReader();
+			// reader.addEventListener("load", function() {
+			// 	images[0]['previewUrl'] = this.result;
+			// 	console.log(images[0]['previewUrl'])
+			// }, false);
+
 			
-		// 	reader.readAsDataURL(file);
-		// }
+			// reader.readAsDataURL(files[0]);
+		//}
 
 		// [].forEach.call(files, readAndPreview);
 
@@ -189,8 +245,9 @@ export function addImage(files) {
 		dispatch({
     		type: ADD_IMAGE,
     		images: images
-		})
+		})		
 
+		)
 
 		// Update firebase image
 		// firebaseStorage.ref('images/' + file.name).put(file)
@@ -272,12 +329,12 @@ export function removeImage(imageName) {
 	return (dispatch, getState) => {
 
 		console.log("imageName is " + imageName)
-		console.log("images before removal " + JSON.stringify(images, null, 2));
+		//console.log("images before removal " + JSON.stringify(images, null, 2));
 
 		let images = [ ...getState().expense.images ];
 		_.remove(images, image => image.storageName === imageName);
 
-		console.log("images after removal " + JSON.stringify(images, null, 2));
+		//console.log("images after removal " + JSON.stringify(images, null, 2));
 
 		dispatch({
 			type: UPDATE_IMAGE,
