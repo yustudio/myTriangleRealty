@@ -7,8 +7,12 @@ import {
 	ADD_EXPENSE_DBKEY,
 	ADD_DATE,
 	RESET_EXPENSE,
+	UPDATE_IMAGES,
 	UPDATE_IMAGE,
 } from '../actions/types';
+
+import _ from 'lodash';
+
 
 export default function (state = {}, action) {
     switch (action.type) {
@@ -27,9 +31,20 @@ export default function (state = {}, action) {
 	    		notes: action.notes
 	    	})	
 	    case ADD_EXPENSE: 
+
+	    	let prevExpenses = [];
+	    	if (state.hasOwnProperty('allExpenses'))
+    			prevExpenses = [...state.allExpenses];
+
+    		console.log(JSON.stringify("prevExpense: " + prevExpenses, null, 2))
+    		console.log(JSON.stringify("current expense: " + action.expense, null, 2))
+
 		    return Object.assign({}, state, {
 	    		...state,	    		
-	    		images: action.images
+	    		allExpenses: [ 
+	    			...prevExpenses,
+    				action.expense	    			
+	    		]
 	    	}) 
 	    case RESET_EXPENSE:
 	    	return {
@@ -63,13 +78,37 @@ export default function (state = {}, action) {
 	    		images: newImages
 	    	}) 	    
 	    }
-	    case UPDATE_IMAGE:	 
+	    case UPDATE_IMAGES:	 
 	    {   	    	
 	    	return Object.assign({}, state, {
 	    		...state,
 	    		loading: false,
 	    		images: action.images
 	    	}) 	    
+	    }
+	    case UPDATE_IMAGE:	 
+	    {   
+	    	let allExpenses = [...state.allExpenses];
+	    	_.map(allExpenses, expense => {
+	    		console.log("expense " + JSON.stringify(expense, null, 2))
+	    		if (expense.dbKey === action.dbKey) {	
+	    			console.log("matched expense " + JSON.stringify(expense, null, 2))
+	    			_.map(expense.images, img => {
+	    				console.log("img " + JSON.stringify(img, null, 2))
+	    				if (img.storageName === action.image.storageName) {
+	    					console.log("matched img " + JSON.stringify(img, null, 2))
+	    					return img['url'] = action.image.url;
+	    				}
+	    			})    			    			
+	    			
+	    		};
+	    	})
+
+	    	return Object.assign({}, state, {
+	    		...state,
+	    		loading: false,
+	    		allExpenses: allExpenses
+	    	}) 	   
 	    }
 	    case ADD_EXPENSE_DBKEY:
 	    	return Object.assign({}, state, {

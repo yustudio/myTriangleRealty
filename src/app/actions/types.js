@@ -22,3 +22,4 @@ export const ADD_EXPENSE_DBKEY = 'ADD_EXPENSE_DBKEY';
 export const ADD_DATE = 'ADD_DATE';
 export const RESET_EXPENSE = 'RESET_EXPENSE';
 export const UPDATE_IMAGE = 'UPDATE_IMAGE';
+export const UPDATE_IMAGES = 'UPDATE_IMAGES';

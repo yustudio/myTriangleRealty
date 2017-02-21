@@ -11,6 +11,7 @@ import {
   ADD_DATE,
   RESET_EXPENSE,
   UPDATE_IMAGE,
+  UPDATE_IMAGES,
 } from './types';
 import {firebaseStorage, firebaseDb} from '../utils/firebase';
 
@@ -49,6 +50,53 @@ function updateExpenseDb(dbKey, expense) {
 	});	
 }
 
+function updateExpenseState(expense) {
+	let newExpense = {};
+	if (expense.hasOwnProperty('date')) 
+		newExpense['date'] = expense.date;
+	if (expense.hasOwnProperty('notes')) 
+		newExpense['notes'] = expense.notes;	
+	if (expense.hasOwnProperty('images')) 
+		newExpense['images'] = expense.images;
+	newExpense['dbKey'] = expense.dbKey;	
+
+	return {
+		type: ADD_EXPENSE,
+		expense: newExpense
+	}
+}
+
+// function storeImages(images) {
+// 	let newImages = [];
+
+// 	console.log("in storeImage")
+
+// 	return new Promise((resolve, reject) => {
+		
+// 		for (let image of images) {
+// 			console.log("in the for loop")
+// 			 //firebaseStorage.ref('images/' + image.storageName).put(image.file)
+// 			 firebaseStorage.ref(image.storageName).put(image.file)
+// 				.then((snapshot) => {								
+// 					let downloadUrl = snapshot.downloadURL;			    
+// 				    console.log("download URL: ", downloadUrl) //, " Progress: ", progress, "%");			   
+				        
+// 				    // Used to update store image
+// 				    newImages = [
+// 				    	...newImages,
+// 				    	{...image, 'url': downloadUrl}
+// 				    ];		
+// 				    console.log("newImages in the loop: " + JSON.stringify(newImages, null, 2))		
+// 				})
+// 			}
+
+// 		console.log("newImages after loop: " + JSON.stringify(newImages, null, 2))
+		
+// 		resolve(newImages);
+// 		}
+// 	)
+// }
+
 export function addExpense() {
 	return (dispatch, getState) => {
 		// Get the db key to insert it into the expense record
@@ -58,81 +106,45 @@ export function addExpense() {
 			dbKey: dbKey
 		})
 
+		dispatch(updateExpenseState(getState().expense))
+
 		if (!getState().expense.hasOwnProperty('images') || 
-			getState().expense.images.length === 0) {
-			console.log("don't have images")
-			dispatch(updateExpenseDb(dbKey, getState().expense));
+			getState().expense.images.length === 0) {			
+
+			dispatch(updateExpenseDb(dbKey, getState().expense.allExpenses[getState().expense.allExpenses.length-1]));
+			return;
 		}
+	
+		let downloadUrl = '';
 
-		console.log("have images")
-
-		let newImages = [];
-
-		//console.log("getState().expense.images  " + JSON.stringify(getState().expense.images, null, 2))
-
-		// Upload firebase storage
 		for (let image of getState().expense.images) {
-			firebaseStorage.ref('images/' + image.storageName).put(image.file)
+			console.log("in the for loop")
+			 //firebaseStorage.ref('images/' + image.storageName).put(image.file)
+			 firebaseStorage.ref(image.storageName).put(image.file)
 				.then((snapshot) => {								
-					let downloadUrl = snapshot.downloadURL;			    
+					downloadUrl = snapshot.downloadURL;			    
 				    console.log("download URL: ", downloadUrl) //, " Progress: ", progress, "%");			   
-				        
-				    // Used to update store image
-				    newImages = [
-				    	...newImages,
-				    	{...image, 'url': downloadUrl}
-				    ];
 
-				    // let images = [];
-				    // for (const img of getState().expense.images) {
-				    // 	console.log("img" + img)
-				    // 	images.push(imag);	
-				    // }			    
-
-				    //console.log(getState().expense)
-
-				    // dispatch({
-			    	// 	type: ADD_IMAGE,
-			    	// 	image: image
-				    // })
 				}).then(() => 
 					dispatch({		
-						type: ADD_EXPENSE,
-						// dbKey: '',
-						// notes: '',
-						// images: []
-						images: newImages
+						type: UPDATE_IMAGE,						
+						image: {...image, 'url': downloadUrl},
+						dbKey: dbKey
 					})
 				).then(() => {
-
-						//console.log("before update storage:" + JSON.stringify((getState().expense)));
-
-						dispatch(updateExpenseDb(dbKey, getState().expense));
-						console.log("after dispatch update DB action")
-					}
-
-				).catch((error) => {
-					switch (error.code) {
-				    case 'storage/unauthorized':
-				      console.log("User doesn't have permission to access the object");
-				      break;
-				    case 'storage/canceled':
-				      console.log("User canceled the upload");
-				      break;		    
-				    case 'storage/unknown':
-				    default:
-				      console.log("Unknown error occurred, inspect error.serverResponse: " + error.serverResponse);
-				      break;
-				  }
+						
+						//dispatch(updateExpenseState(getState().expense))
+						dispatch(updateExpenseDb(dbKey, getState().expense.allExpenses[getState().expense.allExpenses.length-1]));
+						console.log("after dispatch update DB action, length is " + getState().expense.allExpenses.length)
 				})
-		}	
+			}		
 	}
 }
 
 export function onDropzoneSelect(files) {
 	return (dispatch, getState) => {
 		let images = [];
-		
+
 		dispatch({
 			type: SELECT_IMAGE,
 			//imageName: file.name
@@ -260,7 +272,7 @@ export function removeImage(imageName) {
 		//console.log("images after removal " + JSON.stringify(images, null, 2));
 
 		dispatch({
-			type: UPDATE_IMAGE,
+			type: UPDATE_IMAGES,
 			images: images
 		})
 	}
