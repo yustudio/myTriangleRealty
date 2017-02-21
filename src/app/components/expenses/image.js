@@ -18,9 +18,10 @@ class Image extends Component {
 					<div>							
 					{/*<img className="receipt-img" src={image.previewUrl} alt={'image'} />*/}
 					{/*<a href={image.url} download> download </a><br/>*/}					
-					
+
 					{/*Use id here so that action can set it directly since img src somehow doesn't get set from props until another action is issued*/}
-					<div id="preview"> </div>  
+					<div id="preview"> </div> 
+					<img className="receipt-img" src={image.file.preview} />
 					<button type="button" className="remove-comment"
 						onClick={()=>removeImage(image.storageName)}
 						>remove</button>

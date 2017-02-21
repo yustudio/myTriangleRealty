@@ -129,10 +129,14 @@ export function addExpense() {
 	}
 }
 
-function getImage(files) {
-	return new Promise((resolve, reject) => {
+export function onDropzoneSelect(files) {
+	return (dispatch, getState) => {
 		let images = [];
-		let reader = new FileReader();
+		
+		dispatch({
+			type: SELECT_IMAGE,
+			//imageName: file.name
+		});
 
 		for (const key in files) {
 			if (!files.hasOwnProperty(key)) continue; // end loop at inherite property
@@ -140,155 +144,74 @@ function getImage(files) {
 			let image = {};
 			image['storageName'] = files[key].name;   // TODO, add right format for date to file name
 			image['file'] = files[key];
-			//console.log("image " + JSON.stringify(image, null, 2))
-			
-			// reader.addEventListener("load", function() {
-			// 	image['previewUrl'] = reader.result;
-				
-			// }, false);
-
-			reader.onload = function(e) {
-				image['previewUrl'] = e.target.result;
-
-				let preview = document.querySelector('#preview');
-				let htmlImage = new Image();
-				htmlImage.height=100;
-				htmlImage.src=e.target.result;
-				preview.appendChild(htmlImage);
-			}
+	
+			//http://okonet.ru/react-dropzone/
+			image['previewUrl'] = files[key].preview;
 
 			images = [
 				...images,
 				image
-			];		
-
-			reader.readAsDataURL(files[key]);
+			];
 		}
 
-		resolve(images);
-	})
+		dispatch({
+	    		type: ADD_IMAGE,
+	    		images: images
+		})
+	}
 }
 
-export function addImage(files) {
-	return (dispatch, getState) => {
-		dispatch({
-			type: SELECT_IMAGE,
-			//imageName: file.name
-		});
+// function getImage(files) {
+// 	return new Promise((resolve, reject) => {
+// 		let images = [];
+// 		let reader = new FileReader();
+
+// 		for (const key in files) {
+// 			if (!files.hasOwnProperty(key)) continue; // end loop at inherite property
+
+// 			let image = {};
+// 			image['storageName'] = files[key].name;   // TODO, add right format for date to file name
+// 			image['file'] = files[key];
+	
+// 			//https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsDataURL
+// 			reader.onload = function(e) {
+// 				image['previewUrl'] = e.target.result;
+
+// 				let preview = document.querySelector('#preview');
+// 				let htmlImage = new Image();
+// 				htmlImage.height=100;
+// 				htmlImage.src=e.target.result;
+// 				preview.appendChild(htmlImage);
+// 			}
+
+// 			images = [
+// 				...images,
+// 				image
+// 			];		
+
+// 			reader.readAsDataURL(files[key]);
+// 		}
+
+// 		resolve(images);
+// 	})
+// }
+
+// export function addImage(files) {
+// 	return (dispatch, getState) => {
+// 		dispatch({
+// 			type: SELECT_IMAGE,
+// 			//imageName: file.name
+// 		});
 
 
-		return getImage(files).then(images => 
-		
-
-		// let reader = new FileReader();
-
-		// let images = [];
-		// for (const key in files) {
-		// 	if (!files.hasOwnProperty(key)) continue; // end loop at inherite property
-
-		// 	let image = {};
-		// 	image['storageName'] = files[key].name;   // TODO, add right format for date to file name
-		// 	image['file'] = files[key];
-		// 	//console.log("image " + JSON.stringify(image, null, 2))
-			
-		// 	// reader.addEventListener("load", function() {
-		// 	// 	image['previewUrl'] = reader.result;				
-		// 	// }, false);
-
-		// 	reader.onload = function(e) {
-		// 		image['previewUrl'] = e.target.result;
-		// 	}
-
-		// 	images = [
-		// 		...images,
-		// 		image
-		// 	];		
-
-		// 	reader.readAsDataURL(files[key]);
-		// 	//reader.readAsArrayBuffer(files[key]);
-
-		// 	// reader.addEventListener("load", function() {
-		// 	// 	image['previewUrl'] = reader.result;
-		// 	// }, false);
-
-		// 	// if (files[key]) {
-		// 	// 	console.log("before readAsDataURL")
-		// 	// 	reader.readAsDataURL(files[key]);			
-		// 	// 	console.log("after readAsDataURL")
-		// 	// }
-		// }
-
-
-		// function readAndPreview(file){
-		// 	// console.log(file.name)
-		// 	// console.log(file.path)
-		// 	// console.log(file.stream)
-		// 	// console.log(file.buffer)
-		// 	// file.path = 'test';	
-		// 	// file.stream = 'test';
-		// 	// file.buffer = 'test';
-
-		 // 	let reader = new FileReader();
-			// reader.addEventListener("load", function() {
-			// 	images[0]['previewUrl'] = this.result;
-			// 	console.log(images[0]['previewUrl'])
-			// }, false);
-
-			
-			// reader.readAsDataURL(files[0]);
-		//}
-
-		// [].forEach.call(files, readAndPreview);
-
-		//console.log("images " + JSON.stringify(images, null, 2))
-
-		dispatch({
-    		type: ADD_IMAGE,
-    		images: images
-		})		
-
-		)
-
-		// Update firebase image
-		// firebaseStorage.ref('images/' + file.name).put(file)
-		// 	.then((snapshot) => {								
-		// 		let downloadUrl = snapshot.downloadURL;			    
-		// 	    console.log("download URL: ", downloadUrl) //, " Progress: ", progress, "%");			   
-			        
-		// 	    // Used to update store image
-		// 	    let image = {};
-		// 	    image['url'] = downloadUrl;
-		// 	    image['name'] = file.name;			  
-
-		// 	    // let images = [];
-		// 	    // for (const img of getState().expense.images) {
-		// 	    // 	console.log("img" + img)
-		// 	    // 	images.push(imag);	
-		// 	    // }			    
-
-		// 	    //console.log(getState().expense)
-
-		// 	    dispatch({
-		//     		type: ADD_IMAGE,
-		//     		image: image
-		// 	    })
-
-		// 	}).catch((error) => {
-		// 		switch (error.code) {
-		// 	    case 'storage/unauthorized':
-		// 	      console.log("User doesn't have permission to access the object");
-		// 	      break;
-		// 	    case 'storage/canceled':
-		// 	      console.log("User canceled the upload");
-		// 	      break;		    
-		// 	    case 'storage/unknown':
-		// 	    default:
-		// 	      console.log("Unknown error occurred, inspect error.serverResponse: " + error.serverResponse);
-		// 	      break;
-		// 	  }
-		// 	})	
-	}	
-}
+// 		return getImage(files).then(images => 
+// 			dispatch({
+// 	    		type: ADD_IMAGE,
+// 	    		images: images
+// 			})
+// 		)			
+// 	}	
+// }
 
 function removeDbExpense(dbKey) {
 			

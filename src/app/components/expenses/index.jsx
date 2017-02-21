@@ -1,9 +1,10 @@
 import { connect } from 'react-redux';
 import React, {Component} from 'react';
 import {firebaseStorage, firebaseDb} from '../../utils/firebase';
-import { addNotes, addExpense, addImage, removeExpense, addDate, removeImage } from '../../actions/expense_actions'
+import { addNotes, addExpense, removeExpense, addDate, removeImage, onDropzoneSelect } from '../../actions/expense_actions'
 import ImagesList from './images_list';
 import { browserHistory } from 'react-router';
+import Dropzone from 'react-dropzone';
 
 function mapStateToProps(state) {
 	
@@ -26,9 +27,9 @@ function mapDispatchToProps(dispatch) {
 		onSubmitExpense: () => {
 			dispatch(addExpense())
 		},
-		onAddImage: (file) => {
-			dispatch(addImage(file))
-		},
+		// onAddImage: (file) => {
+		// 	dispatch(addImage(file))
+		// },
 		onRemoveExpense: () => {
 			dispatch(removeExpense())
 		},
@@ -37,6 +38,9 @@ function mapDispatchToProps(dispatch) {
 		},
 		removeImage: (imageName) => {
 			dispatch(removeImage(imageName))
+		},
+		onDropzoneSelect: (files) => {
+			dispatch(onDropzoneSelect(files))
 		},
 	}
 }
@@ -60,17 +64,22 @@ class Expenses extends Component {
 	_handleSubmit(e) {
 		e.preventDefault();		
 		this.props.onSubmitExpense();
-		this.refs.fileName.value='';			
+		//this.refs.fileName.value='';			
 	}
 
-	_handleImageSelect(e) {
-		e.preventDefault();			
-		this.props.onAddImage(e.target.files);
-	}
+	// _handleImageSelect(e) {
+	// 	e.preventDefault();			
+	// 	this.props.onAddImage(e.target.files);
+	// }
 
 	_handleDateSelect(e) {
 		e.preventDefault();
 		this.props.onAddDate(e.target.value);
+	}
+
+	_handleDropzoneSelect(files) {
+		console.log(files)
+		this.props.onDropzoneSelect(files);
 	}
 
 	render() {
@@ -99,14 +108,20 @@ class Expenses extends Component {
 	            		<input type="text" value={this.props.notes} 
 	            			onChange={e => this.props.onNotesUpdate(e.target.value)} 
 	            			ref="note"
-	            			/>	                 
+	            			/>	            	
+
 	        		<div>
-		        		<label>Images: </label>	        		
+		        		<label>Images: </label>	  
+			        		<Dropzone ref="dropzone" onDrop={e => this._handleDropzoneSelect(e)}>
+		            		 <div>Try dropping some files here, or click to select files to upload.</div>
+		            		</Dropzone>      		
+		        		{/*}
 		        		<input ref="fileName" className="fileInput" type="file" 
-		        			 onChange={(e)=>this._handleImageSelect(e)} />	    {/*TODO: multiple="multiple" currently each image is set in expense action by its id.*/}
-		        		{/*<img className="receipt-img" src={this.props.imageUrl[0]} />*/}
+		        			 onChange={(e)=>this._handleImageSelect(e)} />	   
+		        		*/}
 		        		<ImagesList images={this.props.images} removeImage={this.props.removeImage} />
 	        		</div>
+
 					{
 						this.props.loading ? (
 						<span>Loading...</span>
