@@ -82,6 +82,10 @@ class Expenses extends Component {
 		this.props.onDropzoneSelect(files);
 	}
 
+	_handleExpensesList() {
+		 browserHistory.push('/expensesList');
+	}
+
 	render() {
 	
 		return (
@@ -144,6 +148,11 @@ class Expenses extends Component {
 	        			<button className="removeButton" type="submit" onClick={(e)=>this._handleRemove(e)}> 
 		        			Remove
 		        		</button>
+
+		        		<button className="expensesList" type="submit" onClick={(e)=>this._handleExpensesList(e)}> 
+		        			Expenses
+		        		</button>
+
 	            </form>
 	          </div>
           </div>

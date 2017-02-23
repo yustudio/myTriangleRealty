@@ -7,8 +7,7 @@ import {
 	ADD_EXPENSE_DBKEY,
 	ADD_DATE,
 	RESET_EXPENSE,
-	UPDATE_IMAGES,
-	UPDATE_IMAGE,
+	UPDATE_IMAGES,	
 } from '../actions/types';
 
 import _ from 'lodash';
@@ -30,22 +29,22 @@ export default function (state = {}, action) {
 	    		...state,
 	    		notes: action.notes
 	    	})	
-	    case ADD_EXPENSE: 
+	    // case ADD_EXPENSE: 
 
-	    	let prevExpenses = [];
-	    	if (state.hasOwnProperty('allExpenses'))
-    			prevExpenses = [...state.allExpenses];
+	    // 	let prevExpenses = [];
+	    // 	if (state.hasOwnProperty('allExpenses'))
+    	// 		prevExpenses = [...state.allExpenses];
 
-    		console.log(JSON.stringify("prevExpense: " + prevExpenses, null, 2))
-    		console.log(JSON.stringify("current expense: " + action.expense, null, 2))
+    	// 	console.log(JSON.stringify("prevExpense: " + prevExpenses, null, 2))
+    	// 	console.log(JSON.stringify("current expense: " + action.expense, null, 2))
 
-		    return Object.assign({}, state, {
-	    		...state,	    		
-	    		allExpenses: [ 
-	    			...prevExpenses,
-    				action.expense	    			
-	    		]
-	    	}) 
+		   //  return Object.assign({}, state, {
+	    // 		...state,	    		
+	    // 		allExpenses: [ 
+	    // 			...prevExpenses,
+    	// 			action.expense	    			
+	    // 		]
+	    // 	}) 
 	    case RESET_EXPENSE:
 	    	return {
 	    		...state,
@@ -86,30 +85,30 @@ export default function (state = {}, action) {
 	    		images: action.images
 	    	}) 	    
 	    }
-	    case UPDATE_IMAGE:	 
-	    {   
-	    	let allExpenses = [...state.allExpenses];
-	    	_.map(allExpenses, expense => {
-	    		console.log("expense " + JSON.stringify(expense, null, 2))
-	    		if (expense.dbKey === action.dbKey) {	
-	    			console.log("matched expense " + JSON.stringify(expense, null, 2))
-	    			_.map(expense.images, img => {
-	    				console.log("img " + JSON.stringify(img, null, 2))
-	    				if (img.storageName === action.image.storageName) {
-	    					console.log("matched img " + JSON.stringify(img, null, 2))
-	    					return img['url'] = action.image.url;
-	    				}
-	    			})    			    			
+	    // case UPDATE_IMAGE:	 
+	    // {   
+	    // 	let allExpenses = [...state.allExpenses];
+	    // 	_.map(allExpenses, expense => {
+	    // 		console.log("expense " + JSON.stringify(expense, null, 2))
+	    // 		if (expense.dbKey === action.dbKey) {	
+	    // 			console.log("matched expense " + JSON.stringify(expense, null, 2))
+	    // 			_.map(expense.images, img => {
+	    // 				console.log("img " + JSON.stringify(img, null, 2))
+	    // 				if (img.storageName === action.image.storageName) {
+	    // 					console.log("matched img " + JSON.stringify(img, null, 2))
+	    // 					return img['url'] = action.image.url;
+	    // 				}
+	    // 			})    			    			
 	    			
-	    		};
-	    	})
+	    // 		};
+	    // 	})
 
-	    	return Object.assign({}, state, {
-	    		...state,
-	    		loading: false,
-	    		allExpenses: allExpenses
-	    	}) 	   
-	    }
+	    // 	return Object.assign({}, state, {
+	    // 		...state,
+	    // 		loading: false,
+	    // 		allExpenses: allExpenses
+	    // 	}) 	   
+	    // }
 	    case ADD_EXPENSE_DBKEY:
 	    	return Object.assign({}, state, {
 	    		...state,

@@ -111,7 +111,7 @@ export function addExpense() {
 		if (!getState().expense.hasOwnProperty('images') || 
 			getState().expense.images.length === 0) {			
 
-			dispatch(updateExpenseDb(dbKey, getState().expense.allExpenses[getState().expense.allExpenses.length-1]));
+			dispatch(updateExpenseDb(dbKey, getState().expenseList.allExpenses[getState().expenseList.allExpenses.length-1]));
 			return;
 		}
 	
@@ -125,17 +125,20 @@ export function addExpense() {
 					downloadUrl = snapshot.downloadURL;			    
 				    console.log("download URL: ", downloadUrl) //, " Progress: ", progress, "%");			   
 
-				}).then(() => 
-					dispatch({		
-						type: UPDATE_IMAGE,						
-						image: {...image, 'url': downloadUrl},
-						dbKey: dbKey
-					})
+				}).then(() => {
+						console.log("before dispatch UPDATE_IMAGE")
+						dispatch({		
+							type: UPDATE_IMAGE,						
+							image: {...image, 'url': downloadUrl},
+							dbKey: dbKey
+						})
+						console.log("dispatched UPDATE_IMAGE")
+					}
 				).then(() => {
 						
 						//dispatch(updateExpenseState(getState().expense))
-						dispatch(updateExpenseDb(dbKey, getState().expense.allExpenses[getState().expense.allExpenses.length-1]));
-						console.log("after dispatch update DB action, length is " + getState().expense.allExpenses.length)
+						dispatch(updateExpenseDb(dbKey, getState().expenseList.allExpenses[getState().expenseList.allExpenses.length-1]));
+						console.log("after dispatch update DB action, length is " + getState().expenseList.allExpenses.length)
 				})
 			}		
 	}

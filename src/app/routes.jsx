@@ -10,6 +10,7 @@ import UserProfile from './components/user/profile';
 import ResetPassword from './components/user/reset_password';
 import requireAuth from './utils/authenticated';
 import Expenses from './components/expenses';
+import ExpensesList from './components/expenses/expenses_list';
 
 export default (
     <Route path="/" component={App}>
@@ -20,6 +21,7 @@ export default (
         <Route path="/reset" component={ResetPassword} />
         <Route path="/profile" component={UserProfile} onEnter={requireAuth} />
         <Route path="/expenses" component={Expenses} onEnter={requireAuth} />
+        <Route path="/expenseslist" component={ExpensesList} onEnter={requireAuth} />
     </Route>
 
 );
