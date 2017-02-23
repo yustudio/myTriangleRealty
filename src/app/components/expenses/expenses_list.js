@@ -7,7 +7,10 @@ import FixedDataTable from 'fixed-data-table';
 
 function mapStateToProps(state) {
 	
-	const { allExpenses, filteredExpenses} = state.expenseList;
+	const { allExpenses, filteredExpenses } = state.expenseList;
+
+	console.log("mapStateToProps, allExpenses " + JSON.stringify(allExpenses, null, 2))
+	console.log("mapStateToProps, filteredExpenses " + JSON.stringify(filteredExpenses, null, 2))
 
 	return {	
 		allExpenses,
@@ -50,9 +53,13 @@ class ExpensesList extends Component {
            {"dbKey":2,"notes":"ntoe 2","date":"2016-03-22","images":[]},
            {"dbKey":3,"notes":"note 3","date":"2017-02-24","images":[]},
            {"dbKey":4,"notes":"note 4","date":"2017-08-22","images":[]}
-           ];
-     let { allExpenses } = this.props;
-  	 this.props.updateFilteredExpenses(allExpenses);
+          ];
+
+     let { allExpenses, filteredExpenses } = this.props;
+
+     console.log("before calling updateFilteredExpenses action, allExpenses " + JSON.stringify(allExpenses, null, 2))
+  	 //this.props.updateFilteredExpenses(allExpenses);
+  	 console.log("after calling updateFilteredExpenses action");
   
     // this.state = {
     //   filteredList: this.rows,
@@ -158,10 +165,9 @@ class ExpensesList extends Component {
 
   render() {
 
-
     //var {filteredList} = this.rows
     let { filteredExpenses } = this.props;
-    console.log(JSON.stringify(filteredExpenses, null, 2));
+    console.log("in render " + JSON.stringify(filteredExpenses, null, 2));
 
     //let filteredList = [1,2,3,4];
 

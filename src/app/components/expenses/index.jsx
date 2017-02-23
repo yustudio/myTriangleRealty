@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {firebaseStorage, firebaseDb} from '../../utils/firebase';
 import { addNotes, addExpense, removeExpense, addDate, removeImage, onDropzoneSelect } from '../../actions/expense_actions'
 import ImagesList from './images_list';
-import { browserHistory } from 'react-router';
+import { browserHistory, Link, IndexLink } from 'react-router';
 import Dropzone from 'react-dropzone';
 
 function mapStateToProps(state) {
@@ -83,7 +83,7 @@ class Expenses extends Component {
 	}
 
 	_handleExpensesList() {
-		 browserHistory.push('/expensesList');
+		 //browserHistory.push('/expensesList');
 	}
 
 	render() {
@@ -150,7 +150,8 @@ class Expenses extends Component {
 		        		</button>
 
 		        		<button className="expensesList" type="submit" onClick={(e)=>this._handleExpensesList(e)}> 
-		        			Expenses
+		        			{/*<IndexLink activeClassName='active' to='/expensesList'>Expenses</IndexLink>*/}
+		        			<Link to='/expensesList'>Expenses</Link>
 		        		</button>
 
 	            </form>
@@ -162,104 +163,3 @@ class Expenses extends Component {
 
 export default connect(mapStateToProps, mapDispatchToProps)(Expenses);
 
-
-// uploadTask.on('state_changed', //this.storageRef.TaskEvent.STATE_CHANGED, // or 'state_changed'
-		//   function(snapshot) {
-		//     // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-		//     var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-		//     //that.setState({progress: progress});
-		//     console.log('Upload is ' + progress + '% done');
-		//     switch (snapshot.state) {
-		// 	      case 'paused': //that.storageRef.TaskState.PAUSED: // or 'paused'
-		// 	        console.log('Upload is paused');
-		// 	        break;
-		// 	      case 'running': //that.storageRef.TaskState.RUNNING: // or 'running'
-		// 	        console.log('Upload is running');
-		// 	        break;
-		// 	    }
-		// 	  }, function(error) {
-		// 	  switch (error.code) {
-		// 	    case 'storage/unauthorized':
-		// 	      // User doesn't have permission to access the object
-		// 	      break;
-		// 	    case 'storage/canceled':
-		// 	      // User canceled the upload
-		// 	      break;		    
-		// 	    case 'storage/unknown':
-		// 	      // Unknown error occurred, inspect error.serverResponse
-		// 	      break;
-		// 	  }
-		// 	}, function() {
-		// 	  // Upload completed successfully, now we can get the download URL
-		// 	  var downloadURL = uploadTask.snapshot.downloadURL;
-		// 	  that.state.imageUrl = downloadURL;
-		// 	  console.log("download URL: ", this.state.imageUrl);
-		// 	}
-		// );
-
-
-
-	// _handleDownload(e) {
-	// 	e.preventDefault();
-
-	// 	// This can be downloaded directly:
-	// 	  var xhr = new XMLHttpRequest();
-	// 	  xhr.responseType = 'blob';
-	// 	  xhr.onload = function(event) {
-	// 	    var blob = xhr.response;
-	// 	  };
-	// 	  xhr.open('GET', this.state.imageUrl);
-	// 	  xhr.send();
-
-	// 	// var starsRef = firebaseStorage.ref('images/WIN_20160208_212136.JPG');
-
-	// 	// // Get the download URL
-	// 	// starsRef.getDownloadURL().then(function(url) {
-	// 	// 	console.log("url is", url)
-	// 	// 	setTimeout(() => {
-	// 	// 	window.open(url, "_blank")
-	// 	// }, 100)
-	// 	//   // Insert url into an <img> tag to "download"
-	// 	// })
-
-	// 	// setTimeout(() => {
-	//  //      const response = {
-	//  //        file: this.state.imageUrl
-	//  //      };
-	//  //      // server sent the url to the file!
-	//  //      // now, let's download:
-	//  //      //window.location.href = response.file;
-	//  //      // you could also do:
-	//  //       window.open(response.file, _blank);
-	//  //    }, 100);
-	// }
-
-
-
-
-	// let uploadTask = this.storageRef.child('images/' + file.name).put(file)
-
-
-		// //Setting this methods: http://stackoverflow.com/questions/39191001/setstate-with-firebase-promise-in-react
-		// uploadTask.on('state_changed', (snapshot) => {				
-		// 		//var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-		// 		var downloadURL = snapshot.downloadURL;
-		// 	    this.state.imageUrl = downloadURL;
-		// 	    //this.state.progress = progress;	
-		// 	    this.state.loading = false;		    
-		// 	    console.log("download URL: ", this.state.imageUrl) //, " Progress: ", progress, "%");			   
-
-		// 	}, (error) => {
-		// 		switch (error.code) {
-		// 	    case 'storage/unauthorized':
-		// 	      console.log("User doesn't have permission to access the object");
-		// 	      break;
-		// 	    case 'storage/canceled':
-		// 	      console.log("User canceled the upload");
-		// 	      break;		    
-		// 	    case 'storage/unknown':
-		// 	    default:
-		// 	      console.log("Unknown error occurred, inspect error.serverResponse");
-		// 	      break;
-		// 	  }
-		// 	})

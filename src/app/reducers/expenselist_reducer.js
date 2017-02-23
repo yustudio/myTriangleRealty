@@ -11,7 +11,7 @@ import {
 import _ from 'lodash';
 
 
-export default function (state = {allExpenses: []}, action) {
+export default function (state = {}, action) {
 
     switch (action.type) {
     	 case ADD_EXPENSE: {
@@ -23,12 +23,15 @@ export default function (state = {allExpenses: []}, action) {
     		console.log(JSON.stringify("prevExpense: " + prevExpenses, null, 2))
     		//console.log(JSON.stringify("current expense: " + action.expense, null, 2))
 
-		    return Object.assign({}, state, {
-	    		...state,	    		
-	    		allExpenses: [ 
+    		let allExpenses = [ 
 	    			...prevExpenses,
     				action.expense	    			
-	    		]
+	    		];
+
+		    return Object.assign({}, state, {
+	    		...state,	    		
+	    		allExpenses: allExpenses,
+	    		filteredExpenses: allExpenses
 	    	}) 
 		}
 	   
@@ -53,7 +56,8 @@ export default function (state = {allExpenses: []}, action) {
 
 	    	return Object.assign({}, state, {
 	    		...state,	    		
-	    		allExpenses: allExpenses
+	    		allExpenses: allExpenses,
+	    		filteredExpenses: allExpenses
 	    	}) 	   
 	    }
 	    
