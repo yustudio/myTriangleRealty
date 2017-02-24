@@ -136,8 +136,8 @@ class Expenses extends Component {
 
 	               {/*} {this.state.progress === 100 ? (  */}
 	                	<p/>
-		                <button className="submitButton" type="submit" onClick={(e)=>this._handleSubmit(e)}> 
-		        			Submit 
+		                <button className="submitButton" type="submit" onClick={(e)=>this._handleSubmit(e)}>		        			 
+		        			<IndexLink activeClassName="activeLink" to='/expenses'>Submit</IndexLink>
 		        		</button> 		        		
 	        		{/* ) : null}  */}
 	        		{/*}	<button className="downloadButton" type="submit" onClick={(e)=>this._handleDownload(e)}> 
@@ -145,13 +145,14 @@ class Expenses extends Component {
 		        		</button>       	*/}
 				        		
 		        		{/*<a href="https://firebasestorage.googleapis.com/v0/b/trianglerealty-7618d.appspot.com/o/images%2FWIN_20160210_123851.JPG?alt=media&token=da49df01-459c-4145-b60c-077eee6290ed" download> download </a>*/}
-	        			<button className="removeButton" type="submit" onClick={(e)=>this._handleRemove(e)}> 
+	        			{/*<button className="removeButton" type="submit" onClick={(e)=>this._handleRemove(e)}> 
 		        			Remove
 		        		</button>
+		        		*/}
 
-		        		<button className="expensesList" type="submit" onClick={(e)=>this._handleExpensesList(e)}> 
+		        		<button className="submitButton" type="submit" onClick={(e)=>this._handleExpensesList(e)}> 
 		        			{/*<IndexLink activeClassName='active' to='/expensesList'>Expenses</IndexLink>*/}
-		        			<Link to='/expensesList'>Expenses</Link>
+		        			<IndexLink activeClassName="activeLink" to='/expensesList'>Expenses</IndexLink>
 		        		</button>
 
 	            </form>

@@ -1,34 +1,36 @@
 import { connect } from 'react-redux';
 import React, {Component} from 'react';
 import {firebaseStorage, firebaseDb} from '../../utils/firebase';
-import { updateFilteredExpenses } from '../../actions/expenselist_actions'
+import { setFilteredExpenses, setStartDate, setEndDate } from '../../actions/expenselist_actions'
 import { browserHistory } from 'react-router';
 import FixedDataTable from 'fixed-data-table';
 
 function mapStateToProps(state) {
 	
-	const { allExpenses, filteredExpenses } = state.expenseList;
+	const { allExpenses, filteredExpenses, startDate, endDate } = state.expenseList;
 
-	console.log("mapStateToProps, allExpenses " + JSON.stringify(allExpenses, null, 2))
-	console.log("mapStateToProps, filteredExpenses " + JSON.stringify(filteredExpenses, null, 2))
+	// console.log("mapStateToProps, allExpenses " + JSON.stringify(allExpenses, null, 2))
+	// console.log("mapStateToProps, filteredExpenses " + JSON.stringify(filteredExpenses, null, 2))
 
 	return {	
 		allExpenses,
-		filteredExpenses
+		filteredExpenses,
+		startDate,
+		endDate
 	}
 }
 
 function mapDispatchToProps(dispatch) {
 	return {
-		updateFilteredExpenses: (filteredExpenses) => {
-			dispatch(updateFilteredExpenses(filteredExpenses))
+		setFilteredExpenses: (filteredExpenses) => {
+			dispatch(setFilteredExpenses(filteredExpenses))
 		},
-		// setStartDate: (startDate) => {
-		// 	dispatch(setStartDate(startDate))
-		// },
-		// setEndDate: (endDate) => {
-		// 	dispatch(setEndDate(endDate))
-		// },		
+		setStartDate: (startDate) => {
+			dispatch(setStartDate(startDate))
+		},
+		setEndDate: (endDate) => {
+			dispatch(setEndDate(endDate))
+		},		
 	}
 }
 
@@ -46,20 +48,23 @@ class ExpensesList extends Component {
  
   constructor(props) {
     super(props);
-    this.rows = 
-        //this.props.allExpenses;
-          [
-           {"dbKey":1,"notes":"note 1","date":"2015-02-21","images":[]},
-           {"dbKey":2,"notes":"ntoe 2","date":"2016-03-22","images":[]},
-           {"dbKey":3,"notes":"note 3","date":"2017-02-24","images":[]},
-           {"dbKey":4,"notes":"note 4","date":"2017-08-22","images":[]}
-          ];
 
-     let { allExpenses, filteredExpenses } = this.props;
+    //this._filterDate = this._filterDate.bind(this);
 
-     console.log("before calling updateFilteredExpenses action, allExpenses " + JSON.stringify(allExpenses, null, 2))
-  	 //this.props.updateFilteredExpenses(allExpenses);
-  	 console.log("after calling updateFilteredExpenses action");
+    // this.rows = 
+    //     //this.props.allExpenses;
+    //       [
+    //        {"dbKey":1,"notes":"note 1","date":"2015-02-21","images":[]},
+    //        {"dbKey":2,"notes":"ntoe 2","date":"2016-03-22","images":[]},
+    //        {"dbKey":3,"notes":"note 3","date":"2017-02-24","images":[]},
+    //        {"dbKey":4,"notes":"note 4","date":"2017-08-22","images":[]}
+    //       ];
+
+     //let { allExpenses, filteredExpenses } = this.props;
+
+    //  console.log("before calling setFilteredExpenses action, allExpenses " + JSON.stringify(allExpenses, null, 2))
+  	 // //this.props.setFilteredExpenses(allExpenses);
+  	 // console.log("after calling setFilteredExpenses action");
   
     // this.state = {
     //   filteredList: this.rows,
@@ -77,24 +82,49 @@ class ExpensesList extends Component {
       //     filteredList: this.rows,
       //   });
       // }
-      console.log("value in filter change: " + event.target.value)
-      console.log("col in filter change: " + col)
+      // console.log("value in filter change: " + event.target.value)
+      // console.log("col in filter change: " + col)
       var filterBy = event.target.value.toString().toLowerCase();
-      var size = this.rows.length;
+      var size = this.props.allExpenses.length;
       var filteredList = [];
       for (var index = 0; index < size; index++) {
-        var v = this.rows[index][col];
+        var v = this.props.allExpenses[index][col];
         if (v.toString().toLowerCase().indexOf(filterBy) !== -1) {
-          filteredList.push(this.rows[index]);
+          filteredList.push(this.props.allExpenses[index]);
         }
       }
+    
+      this.props.setFilteredExpenses(filteredList);
+    }
+
+    _filterDate(start, end) {
+    	console.log("inside filterDate, start " + start + " end " + end);
+
+		if (start && !end) {
+			console.log("start only")
+			this.props.setFilteredExpenses({});
+		}
+		else if (!start && end) {
+			console.log("end only")
+		} else {
+			console.log("start and end")
+		}
+
+  	  // var filterBy = event.target.value.toString().toLowerCase();
+      // var size = this.rows.length;
+      // var filteredList = [];
+      // for (var index = 0; index < size; index++) {
+      //   var v = this.rows[index][col];
+      //   if (v.toString().toLowerCase().indexOf(filterBy) !== -1) {
+      //     filteredList.push(this.rows[index]);
+      //   }
+      // }
       // this.setState({
       //   filteredList: filteredList,
       // });
-      updateFilteredList(filteredList);
-    }
+  }
 
-    _onDateChange(dateType, event) {
+    _onDateChange = (dateType, event) => {
       // console.log("start: " + this.refs.startDate.value)
       // console.log("end: " + this.refs.endDate.value)
         
@@ -108,34 +138,33 @@ class ExpensesList extends Component {
       //     filteredList: this.rows,
       //   });
       // }
+      console.log("startDate is originally: " + this.props.startDate)  
+      console.log("endDate is originally: " + this.props.startDate)  
 
-      // if (dateType === 'startDate' && this.state.endDate === '') {
-      //   console.log("startDate only: " + date)  
-      //   this.setState({
-      //       startDate: date,
-      //     });   
-      // } else if (dateType === 'endDate' && this.state.startDate === '') {
-      //   console.log("endDate only: " + date)
-      //   this.setState({
-      //       endDate: date,
-      //     });
-      // } else {
-      //   console.log("start: " + this.state.startDate + ", end: " + this.state.endDate)
-      // }
- 
-      // var filterBy = event.target.value.toString().toLowerCase();
-      // var size = this.rows.length;
-      // var filteredList = [];
-      // for (var index = 0; index < size; index++) {
-      //   var v = this.rows[index][col];
-      //   if (v.toString().toLowerCase().indexOf(filterBy) !== -1) {
-      //     filteredList.push(this.rows[index]);
-      //   }
-      // }
-      // this.setState({
-      //   filteredList: filteredList,
-      // });
+      if (dateType === 'startDate' && !this.props.endDate) {
+        console.log("startDate only: " + date)
+        //this._filterDate.bind(this, date, '')();
+        this._filterDate(date);
+        this.props.setStartDate(date);
+        //console.log("startDate is now: " + this.props.startDate)  
+      } else if (dateType === 'endDate' && !this.props.startDate) {
+        console.log("endDate only: " + date)
+        this._filterDate.bind(this, '', date);
+        this.props.setEndDate(date);
+      } else {        //console.log("start: " + this.state.startDate + ", end: " + this.state.endDate)
+
+        if (dateType === 'endDate') {
+        	this._filterDate.bind(this, this.props.startDate, date);
+        	this.props.setEndDate(date);
+    	} else if (dateType === 'startDate') {
+    		this._filterDate.bind(this, date, this.props.endDate);
+        	this.props.setStartDate(date);
+    	}
+
+      }      
     }
+
+
 
   
   _headerCell(col) {
@@ -167,7 +196,7 @@ class ExpensesList extends Component {
 
     //var {filteredList} = this.rows
     let { filteredExpenses } = this.props;
-    console.log("in render " + JSON.stringify(filteredExpenses, null, 2));
+    console.log("in render, filteredExpenses: " + JSON.stringify(filteredExpenses, null, 2));
 
     //let filteredList = [1,2,3,4];
 

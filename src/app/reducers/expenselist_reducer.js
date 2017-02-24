@@ -61,10 +61,22 @@ export default function (state = {}, action) {
 	    	}) 	   
 	    }
 	    
-	     case SET_FILTERED_EXPENSES:
+	    case SET_FILTERED_EXPENSES:
 	    	return Object.assign({}, state, {
 	    		...state,
 	    		filteredExpenses: action.filteredExpenses	    		
+	    	})
+
+	    case SET_STARTDATE:
+	    	return Object.assign({}, state, {
+	    		...state,
+	    		startDate: action.startDate
+	    	})
+
+	    case SET_ENDDATE:
+	    	return Object.assign({}, state, {
+	    		...state,
+	    		endDate: action.endDate
 	    	})
 
 	    default:

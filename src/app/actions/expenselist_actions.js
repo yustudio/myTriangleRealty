@@ -9,7 +9,7 @@ import {
 	SET_ENDDATE,  
 } from './types';
 
-export function updateFilteredExpenses(filteredExpenses) {
+export function setFilteredExpenses(filteredExpenses) {
 	
 	return {
 		type: SET_FILTERED_EXPENSES,
@@ -17,44 +17,18 @@ export function updateFilteredExpenses(filteredExpenses) {
 	}
 }
 
-export function addNotes(notes) {
+export function setStartDate(startDate) {
 	return {		
-		type: ADD_NOTES,
-		notes
+		type: SET_STARTDATE,
+		startDate
 	}
 }
 
-function updateExpenseDb(dbKey, expense) {
-	// Update firebase database
-	let update = {};
-	update['expenses/' + dbKey] = expense;		
-	
-	return firebaseDb.ref().update(update).then(() => {
-		console.log("after updating DB")
-		return {		
-			type: RESET_EXPENSE,
-			dbKey: '',
-			notes: '',
-			images: []				
-		}
-	}).catch((e) => {
-		console.log(e.message)
-	});	
-}
-
-function updateExpenseState(expense) {
-	let newExpense = {};
-	if (expense.hasOwnProperty('date')) 
-		newExpense['date'] = expense.date;
-	if (expense.hasOwnProperty('notes')) 
-		newExpense['notes'] = expense.notes;	
-	if (expense.hasOwnProperty('images')) 
-		newExpense['images'] = expense.images;
-	newExpense['dbKey'] = expense.dbKey;	
-
-	return {
-		type: ADD_EXPENSE,
-		expense: newExpense
+export function setEndDate(endDate) {
+	return {		
+		type: SET_ENDDATE,
+		endDate
 	}
 }
+
 
