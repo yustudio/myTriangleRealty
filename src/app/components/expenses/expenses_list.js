@@ -102,12 +102,40 @@ class ExpensesList extends Component {
 
 		if (start && !end) {
 			console.log("start only")
-			this.props.setFilteredExpenses({});
+			var size = this.props.allExpenses.length;
+	      	var filteredList = [];
+	      	for (let index = 0; index < size; index++) {
+	        	let v = this.props.allExpenses[index]['date'];
+	        	if (v >= start) {
+	          		filteredList.push(this.props.allExpenses[index]);
+	        	}
+	      	}
+			this.props.setFilteredExpenses(filteredList);
 		}
 		else if (!start && end) {
-			console.log("end only")
+			console.log("end only");
+			let size = this.props.allExpenses.length;
+	      	let filteredList = [];
+	      	for (let index = 0; index < size; index++) {
+	        	let v = this.props.allExpenses[index]['date'];
+	        	console.log("current date is: " + v)
+	        	if (v <= end) {
+	        		console.log("matched date: " + v)
+	          		filteredList.push(this.props.allExpenses[index]);
+	        	}
+	      	}
+			this.props.setFilteredExpenses(filteredList);
 		} else {
 			console.log("start and end")
+			var size = this.props.allExpenses.length;
+	      	var filteredList = [];
+	      	for (let index = 0; index < size; index++) {
+	        	let v = this.props.allExpenses[index]['date'];
+	        	if (v <= end && v >= start) {
+	          		filteredList.push(this.props.allExpenses[index]);
+	        	}
+	      	}
+			this.props.setFilteredExpenses(filteredList);
 		}
 
   	  // var filterBy = event.target.value.toString().toLowerCase();
@@ -138,26 +166,24 @@ class ExpensesList extends Component {
       //     filteredList: this.rows,
       //   });
       // }
-      console.log("startDate is originally: " + this.props.startDate)  
-      console.log("endDate is originally: " + this.props.startDate)  
+      // console.log("startDate is originally: " + this.props.startDate)  
+      // console.log("endDate is originally: " + this.props.startDate)  
 
       if (dateType === 'startDate' && !this.props.endDate) {
         console.log("startDate only: " + date)
-        //this._filterDate.bind(this, date, '')();
-        this._filterDate(date);
-        this.props.setStartDate(date);
-        //console.log("startDate is now: " + this.props.startDate)  
+        this._filterDate.bind(this, date, '')();        
+        this.props.setStartDate(date);        
       } else if (dateType === 'endDate' && !this.props.startDate) {
         console.log("endDate only: " + date)
-        this._filterDate.bind(this, '', date);
+        this._filterDate.bind(this, '', date)();
         this.props.setEndDate(date);
-      } else {        //console.log("start: " + this.state.startDate + ", end: " + this.state.endDate)
+      } else {
 
         if (dateType === 'endDate') {
-        	this._filterDate.bind(this, this.props.startDate, date);
+        	this._filterDate.bind(this, this.props.startDate, date)();
         	this.props.setEndDate(date);
     	} else if (dateType === 'startDate') {
-    		this._filterDate.bind(this, date, this.props.endDate);
+    		this._filterDate.bind(this, date, this.props.endDate)();
         	this.props.setStartDate(date);
     	}
 
