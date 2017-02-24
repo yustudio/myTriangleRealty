@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import React, {Component} from 'react';
 import {firebaseStorage, firebaseDb} from '../../utils/firebase';
 import { setFilteredExpenses, setStartDate, setEndDate } from '../../actions/expenselist_actions'
-import { browserHistory } from 'react-router';
+import { browserHistory, IndexLink } from 'react-router';
 import FixedDataTable from 'fixed-data-table';
 
 function mapStateToProps(state) {
@@ -43,6 +43,11 @@ const TextCell = ({rowIndex, data, col, ...props}) => (
     </Cell>
   );
   
+const ImageCell = ({rowIndex, data, col, ...props}) => (
+    <Cell {...props}>
+      {data[rowIndex][col].length}
+    </Cell>
+  );
 
 class ExpensesList extends Component {
  
@@ -90,6 +95,7 @@ class ExpensesList extends Component {
       for (var index = 0; index < size; index++) {
         var v = this.props.allExpenses[index][col];
         if (v.toString().toLowerCase().indexOf(filterBy) !== -1) {
+          console.log("match on field");
           filteredList.push(this.props.allExpenses[index]);
         }
       }
@@ -191,28 +197,53 @@ class ExpensesList extends Component {
     }
 
 
+	_onImageChange(col, event) {  
+	  if (!event.target.value) {
+	  	this.props.setFilteredExpenses(this.props.allExpenses);
+	  }
 
+      //var filterBy = event.target.value.toString().toLowerCase();
+      var size = this.props.allExpenses.length;
+      var filteredList = [];
+      for (var index = 0; index < size; index++) {
+        var v = this.props.allExpenses[index][col].length;
+        console.log("_onImageChange entry images length is " + v)
+        console.log("event.target.value " + event.target.value)
+        if (v.toString().indexOf(event.target.value) !== -1) {
+          filteredList.push(this.props.allExpenses[index]);
+        }
+      }
+    
+      this.props.setFilteredExpenses(filteredList);
+    }
   
   _headerCell(col) {
-      return (
+  	let headerFilter;
+
+  	 if (col === "date") {
+  	 	headerFilter = (
+		 	<div>
+	        Start 
+	        <input type="date" style={{width:100+'%'}} onChange={this._onDateChange.bind(this, 'startDate')}/>            
+	        End 
+	        <input type="date" style={{width:100+'%'}} onChange={this._onDateChange.bind(this, 'endDate')}/>
+	        </div>
+  	 )} else if (col === "images") {
+  	 	headerFilter = (
+  	 		<div>
+			<input style={{width:70+'%'}} onChange={this._onImageChange.bind(this, col)}/>
+			</div>			
+  	 )} else {
+ 		headerFilter = (
+			<div>
+			<input style={{width:70+'%'}} onChange={this._onFilterChange.bind(this, col)}/>
+			</div>
+	 )}
+
+	return (
       <div>
         {col.toUpperCase()}       
-        {col === "date" ? 
-          (
-            <div>
-            Start 
-            <input type="date" style={{width:100+'%'}} onChange={this._onDateChange.bind(this, 'startDate')}/>            
-            End 
-            <input type="date" style={{width:100+'%'}} onChange={this._onDateChange.bind(this, 'endDate')}/>
-            </div>
-          )
-          : (
-            <div>
-            <input style={{width:70+'%'}} onChange={this._onFilterChange.bind(this, col)}/>
-            </div>
-            )
-          
-        }
+        {headerFilter}
       </div>
       )
     }
@@ -220,17 +251,17 @@ class ExpensesList extends Component {
 
   render() {
 
-    //var {filteredList} = this.rows
     let { filteredExpenses } = this.props;
     console.log("in render, filteredExpenses: " + JSON.stringify(filteredExpenses, null, 2));
 
-    //let filteredList = [1,2,3,4];
-
     return (
-      <div>             
+      <div> 
+      	<button className="submitButton">
+        	<IndexLink activeClassName="activeLink" to='/expenses'>Add Another Expense</IndexLink>
+        </button>            
         <Table
           rowHeight={50}
-          rowsCount={filteredExpenses.length}
+          rowsCount={ filteredExpenses.length }
           headerHeight={150}
           width={800}
           height={1000}
@@ -252,8 +283,16 @@ class ExpensesList extends Component {
             //header={<Cell>Notes</Cell>}
             cell={<TextCell data={filteredExpenses} col="notes" />}
             width={200}
-          />         
+          />
+          <Column
+            header={this._headerCell.bind(this,"images")}
+            //header={<Cell>Notes</Cell>}
+            cell={<ImageCell data={filteredExpenses} col="images" />}
+            width={200}
+          />          
         </Table>
+
+        
       </div>
     );
   }
