@@ -6,7 +6,8 @@ import {
 	SET_SORTBY,
 	SET_SORTDIR,
 	SET_STARTDATE,
-	SET_ENDDATE,  
+	SET_ENDDATE, 
+	REMOVE_EXPENSE,
 } from './types';
 
 export function setFilteredExpenses(filteredExpenses) {
@@ -28,6 +29,21 @@ export function setEndDate(endDate) {
 	return {		
 		type: SET_ENDDATE,
 		endDate
+	}
+}
+
+export function removeExpense(rowIndex) {
+	return (dispatch, getState) => {
+
+		let filteredExpenses = [ ...getState().expenseList.filteredExpenses ];
+
+		console.log("rowIndex in removeExpense is " + rowIndex)
+		filteredExpenses.splice(rowIndex, 1);
+
+		dispatch({	
+			type: REMOVE_EXPENSE,
+			filteredExpenses
+		});
 	}
 }
 

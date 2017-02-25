@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import React, {Component} from 'react';
 import {firebaseStorage, firebaseDb} from '../../utils/firebase';
-import { setFilteredExpenses, setStartDate, setEndDate } from '../../actions/expenselist_actions'
+import { setFilteredExpenses, setStartDate, setEndDate, removeExpense } from '../../actions/expenselist_actions'
 import { browserHistory, IndexLink } from 'react-router';
 import FixedDataTable from 'fixed-data-table';
 
@@ -30,7 +30,10 @@ function mapDispatchToProps(dispatch) {
 		},
 		setEndDate: (endDate) => {
 			dispatch(setEndDate(endDate))
-		},		
+		},
+		removeExpense: (rowIndex) => {
+			dispatch(removeExpense(rowIndex))
+		},
 	}
 }
 
@@ -48,6 +51,18 @@ const ImageCell = ({rowIndex, data, col, ...props}) => (
       {data[rowIndex][col].length}
     </Cell>
   );
+
+const OptionCell = ({rowIndex, removeExpense, ...props}) => {
+
+    	console.log("in OptionCell rowIndex is " + rowIndex)
+	   return (
+	   	<Cell {...props}>      
+	      <button className="removeButton" type="button" onClick={(e)=>removeExpense(rowIndex)}> 
+			  Remove
+		   </button>
+		 </Cell>
+		 )
+	  };
 
 class ExpensesList extends Component {
  
@@ -81,19 +96,15 @@ class ExpensesList extends Component {
   }
 
 
-  _onFilterChange(col, event) {
-      // if (!event.target.value) {
-      //   this.setState({
-      //     filteredList: this.rows,
-      //   });
-      // }
-      // console.log("value in filter change: " + event.target.value)
-      // console.log("col in filter change: " + col)
+  	_onFilterChange(col, event) {
+      
       var filterBy = event.target.value.toString().toLowerCase();
       var size = this.props.allExpenses.length;
       var filteredList = [];
       for (var index = 0; index < size; index++) {
         var v = this.props.allExpenses[index][col];
+        console.log("_onFilterChange original value " + v)
+        console.log("event.target.value input value " + event.target.value)
         if (v.toString().toLowerCase().indexOf(filterBy) !== -1) {
           console.log("match on field");
           filteredList.push(this.props.allExpenses[index]);
@@ -142,20 +153,7 @@ class ExpensesList extends Component {
 	        	}
 	      	}
 			this.props.setFilteredExpenses(filteredList);
-		}
-
-  	  // var filterBy = event.target.value.toString().toLowerCase();
-      // var size = this.rows.length;
-      // var filteredList = [];
-      // for (var index = 0; index < size; index++) {
-      //   var v = this.rows[index][col];
-      //   if (v.toString().toLowerCase().indexOf(filterBy) !== -1) {
-      //     filteredList.push(this.rows[index]);
-      //   }
-      // }
-      // this.setState({
-      //   filteredList: filteredList,
-      // });
+		}  	
   }
 
     _onDateChange = (dateType, event) => {
@@ -201,8 +199,7 @@ class ExpensesList extends Component {
 	  if (!event.target.value) {
 	  	this.props.setFilteredExpenses(this.props.allExpenses);
 	  }
-
-      //var filterBy = event.target.value.toString().toLowerCase();
+    
       var size = this.props.allExpenses.length;
       var filteredList = [];
       for (var index = 0; index < size; index++) {
@@ -246,19 +243,20 @@ class ExpensesList extends Component {
         {headerFilter}
       </div>
       )
-    }
+    }   
 
 
   render() {
 
     let { filteredExpenses } = this.props;
-    console.log("in render, filteredExpenses: " + JSON.stringify(filteredExpenses, null, 2));
+    //console.log("in render, filteredExpenses: " + JSON.stringify(filteredExpenses, null, 2));
 
     return (
       <div> 
       	<button className="submitButton">
         	<IndexLink activeClassName="activeLink" to='/expenses'>Add Another Expense</IndexLink>
-        </button>            
+        </button> 
+        <p/>           
         <Table
           rowHeight={50}
           rowsCount={ filteredExpenses.length }
@@ -270,13 +268,13 @@ class ExpensesList extends Component {
             header={this._headerCell.bind(this,"dbKey")}          
             cell={<TextCell data={filteredExpenses} col="dbKey" />}
             fixed={true}
-            width={120}
+            width={150}
           />
           <Column
             header={this._headerCell.bind(this,"date")}
             cell={<TextCell data={filteredExpenses} col="date" />}
             fixed={true}
-            width={120}
+            width={150}
           />
           <Column
             header={this._headerCell.bind(this,"notes")}
@@ -289,7 +287,12 @@ class ExpensesList extends Component {
             //header={<Cell>Notes</Cell>}
             cell={<ImageCell data={filteredExpenses} col="images" />}
             width={200}
-          />          
+          /> 
+          <Column            
+            header={<Cell>Options</Cell>}
+            cell={<OptionCell removeExpense={this.props.removeExpense.bind(this)} />}
+            width={100}
+          />         
         </Table>
 
         

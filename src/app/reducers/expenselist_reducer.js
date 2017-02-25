@@ -5,7 +5,8 @@ import {
 	SET_STARTDATE,
 	SET_ENDDATE, 
 	ADD_EXPENSE,
-	UPDATE_IMAGE, 
+	UPDATE_IMAGE,
+	REMOVE_EXPENSE, 
 } from '../actions/types';
 
 import _ from 'lodash';
@@ -77,6 +78,13 @@ export default function (state = {}, action) {
 	    	return Object.assign({}, state, {
 	    		...state,
 	    		endDate: action.endDate
+	    	})
+
+	    case REMOVE_EXPENSE:
+	    	return Object.assign({}, state, {
+	    		...state,
+	    		allExpenses: action.filteredExpenses,
+	    		filteredExpenses: action.filteredExpenses
 	    	})
 
 	    default:
