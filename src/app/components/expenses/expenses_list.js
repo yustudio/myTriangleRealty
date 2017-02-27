@@ -97,6 +97,10 @@ class ExpensesList extends Component {
 
 
   	_onFilterChange(col, event) {
+
+  	  if (!event.target.value) {
+	  	this.props.setFilteredExpenses(this.props.allExpenses);
+	  }
       
       var filterBy = event.target.value.toString().toLowerCase();
       var size = this.props.allExpenses.length;

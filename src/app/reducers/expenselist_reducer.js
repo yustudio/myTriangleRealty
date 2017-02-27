@@ -83,7 +83,7 @@ export default function (state = {}, action) {
 	    case REMOVE_EXPENSE:
 	    	return Object.assign({}, state, {
 	    		...state,
-	    		allExpenses: action.filteredExpenses,
+	    		allExpenses: action.allExpenses,
 	    		filteredExpenses: action.filteredExpenses
 	    	})
 
