@@ -40,18 +40,37 @@ export function removeExpense(rowIndex) {
 
 		let filteredExpense = filteredExpenses[rowIndex];
 		let allExpenseIndx = allExpenses.findIndex((expense) => { return expense.dbKey === filteredExpense.dbKey; });
-		console.log("rowIndex in allExpense is " + allExpenseIndx)
-		allExpenses.splice(allExpenseIndx,1);
+		
 
-
-		console.log("rowIndex in removeExpense is " + rowIndex)
-		filteredExpenses.splice(rowIndex, 1);
-
-		dispatch({	
-			type: REMOVE_EXPENSE,
-			filteredExpenses,
-			allExpenses
+		// remove from firebase storage
+		let removeFrFirebaseStorage = filteredExpenses[rowIndex].images.map((img) => {
+			return firebaseStorage.ref(img.storageName).delete();
 		});
+
+		//let removeFrFirebaseDb = firebaseDb.ref('expenses/' + ).remove();
+		let update = {};
+		update[filteredExpenses[rowIndex].dbKey] = null;
+		let removeFrFirebaseDb = firebaseDb.ref('expenses').update(update);
+
+		Promise.all([removeFrFirebaseStorage, removeFrFirebaseDb])
+		.then(()=>{
+			console.log("rowIndex in allExpense is " + allExpenseIndx)
+			allExpenses.splice(allExpenseIndx,1);
+
+			console.log("rowIndex in removeExpense is " + rowIndex)
+			filteredExpenses.splice(rowIndex, 1);
+
+			return (
+				// remove from state
+				dispatch({	
+					type: REMOVE_EXPENSE,
+					filteredExpenses,
+					allExpenses
+				})
+			)
+		}).catch((err) => {
+			console.log("Error during removal of image: " + err.message);
+		})	
 	}
 }
 
