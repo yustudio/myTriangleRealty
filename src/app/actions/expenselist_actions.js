@@ -47,6 +47,7 @@ export function removeExpense(rowIndex) {
 			return firebaseStorage.ref(img.storageName).delete();
 		});
 
+		// Remove from firebase db
 		//let removeFrFirebaseDb = firebaseDb.ref('expenses/' + ).remove();
 		let update = {};
 		update[filteredExpenses[rowIndex].dbKey] = null;

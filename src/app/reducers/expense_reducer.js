@@ -7,7 +7,9 @@ import {
 	ADD_EXPENSE_DBKEY,
 	ADD_DATE,
 	RESET_EXPENSE,
-	UPDATE_IMAGES,	
+	UPDATE_IMAGES,
+	EDIT_EXPENSE,	
+	EDITED_EXPENSE,
 } from '../actions/types';
 
 import _ from 'lodash';
@@ -15,6 +17,20 @@ import _ from 'lodash';
 
 export default function (state = {}, action) {
     switch (action.type) {
+    	case EDIT_EXPENSE:	    
+	    	return Object.assign({}, state, {
+	    		...state,
+	    		editing: action.edit,
+	    		dbKey: action.dbKey,
+	    		notes: action.notes,
+	    		images: action.images,
+	    		date: action.date,
+	    	})
+	    case EDITED_EXPENSE:	    
+	    	return Object.assign({}, state, {
+	    		...state,
+	    		editing: action.edit,
+	    	})
 	    case ADD_DATE:
 	    	return Object.assign({}, state, {
 	    		...state,

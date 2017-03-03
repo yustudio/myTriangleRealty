@@ -1,7 +1,8 @@
 import { connect } from 'react-redux';
 import React, {Component} from 'react';
 import {firebaseStorage, firebaseDb} from '../../utils/firebase';
-import { setFilteredExpenses, setStartDate, setEndDate, removeExpense } from '../../actions/expenselist_actions'
+import { editExpense} from '../../actions/expense_actions'
+import { setFilteredExpenses, setStartDate, setEndDate, removeExpense} from '../../actions/expenselist_actions'
 import { browserHistory, IndexLink } from 'react-router';
 import FixedDataTable from 'fixed-data-table';
 
@@ -34,6 +35,9 @@ function mapDispatchToProps(dispatch) {
 		removeExpense: (rowIndex) => {
 			dispatch(removeExpense(rowIndex))
 		},
+		editExpense: (e,rowIndex) => {
+			dispatch(editExpense(e,rowIndex))
+		},
 	}
 }
 
@@ -52,14 +56,19 @@ const ImageCell = ({rowIndex, data, col, ...props}) => (
     </Cell>
   );
 
-const OptionCell = ({rowIndex, removeExpense, ...props}) => {
+const OptionCell = ({rowIndex, removeExpense, editExpense, ...props}) => {
 
     	console.log("in OptionCell rowIndex is " + rowIndex)
 	   return (
-	   	<Cell {...props}>      
-	      <button className="removeButton" type="button" onClick={(e)=>removeExpense(rowIndex)}> 
-			  Remove
-		   </button>
+	   	<Cell {...props}> 
+	   		
+		      <button className="removeButton" type="button" onClick={(e)=>removeExpense(rowIndex)}> 
+				  Remove
+			  </button>
+			   <button className="editButton" type="button" onClick={(e)=>editExpense(e,rowIndex)}> 
+				  <IndexLink activeClassName="activeLink" to='/expenses'>Edit</IndexLink>
+			   </button>
+		
 		 </Cell>
 		 )
 	  };
@@ -262,7 +271,7 @@ class ExpensesList extends Component {
         </button> 
         <p/>           
         <Table
-          rowHeight={50}
+          rowHeight={80}
           rowsCount={ filteredExpenses.length }
           headerHeight={150}
           width={800}
@@ -294,7 +303,9 @@ class ExpensesList extends Component {
           /> 
           <Column            
             header={<Cell>Options</Cell>}
-            cell={<OptionCell removeExpense={this.props.removeExpense.bind(this)} />}
+            cell={<OptionCell removeExpense={this.props.removeExpense.bind(this)} 
+            				  editExpense={this.props.editExpense.bind(this)}
+            		/>}
             width={100}
           />         
         </Table>

@@ -1,21 +1,22 @@
 import { connect } from 'react-redux';
 import React, {Component} from 'react';
 import {firebaseStorage, firebaseDb} from '../../utils/firebase';
-import { addNotes, addExpense, removeExpense, addDate, removeImage, onDropzoneSelect } from '../../actions/expense_actions'
+import { addNotes, addExpense, removeExpense, addDate, removeImage, onDropzoneSelect, editExpense } from '../../actions/expense_actions'
 import ImagesList from './images_list';
 import { browserHistory, Link, IndexLink } from 'react-router';
 import Dropzone from 'react-dropzone';
 
 function mapStateToProps(state) {
 	
-	const { dbKey, date, notes, loading, images } = state.expense;
+	const { dbKey, date, notes, loading, images, editing } = state.expense;
 
 	return {	
 		dbKey,
 		date,
 		notes,		
 		loading,
-		images	
+		images,
+		editing,	
 	}
 }
 
@@ -27,6 +28,9 @@ function mapDispatchToProps(dispatch) {
 		onSubmitExpense: () => {
 			dispatch(addExpense())
 		},
+		// onSubmitModifiedExpense: (rowIndex) => {
+		// 	dispatch(editExpense(rowIndex))
+		// },
 		// onAddImage: (file) => {
 		// 	dispatch(addImage(file))
 		// },
@@ -62,8 +66,11 @@ class Expenses extends Component {
 	//http://stackoverflow.com/questions/37176397/multiple-download-links-to-one-zip-file-before-download-javascript/
 
 	_handleSubmit(e) {
-		e.preventDefault();		
-		this.props.onSubmitExpense();
+		e.preventDefault();
+		// if (this.props.editing)
+		// 	this.props.onSubmitModifiedExpense();
+		// else
+			this.props.onSubmitExpense();
 		//this.refs.fileName.value='';			
 	}
 
@@ -86,8 +93,7 @@ class Expenses extends Component {
 		 //browserHistory.push('/expensesList');
 	}
 
-	render() {
-	
+	render() {	
 		return (
 			<div className="row">
               <div className="col-lg-4">
@@ -102,7 +108,7 @@ class Expenses extends Component {
               <p/>
               <p/> 
               <div className="col-lg-12">            
-              <label>Date:  </label><input id="expenseDate" type="date" onChange={e=>this._handleDateSelect(e)}/>
+              <label>Date:  </label><input id="expenseDate" defaultValue={this.props.date} type="date" onChange={e=>this._handleDateSelect(e)}/>
               </div>
 	          <div className="col-lg-12">                           
 

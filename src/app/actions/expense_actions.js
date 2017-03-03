@@ -12,6 +12,8 @@ import {
   RESET_EXPENSE,
   UPDATE_IMAGE,
   UPDATE_IMAGES,
+  EDIT_EXPENSE,
+  EDITED_EXPENSE,
 } from './types';
 import {firebaseStorage, firebaseDb} from '../utils/firebase';
 
@@ -50,8 +52,8 @@ function updateExpenseDb(dbKey, expense) {
 	});	
 }
 
-function updateExpenseState(expense) {
-	let newExpense = {};
+function updateExpenseState(expense, editing) {
+	let newExpense = {};	
 	if (expense.hasOwnProperty('date')) 
 		newExpense['date'] = expense.date;
 	if (expense.hasOwnProperty('notes')) 
@@ -60,9 +62,17 @@ function updateExpenseState(expense) {
 		newExpense['images'] = expense.images;
 	newExpense['dbKey'] = expense.dbKey;	
 
-	return {
-		type: ADD_EXPENSE,
-		expense: newExpense
+	if (!editing) {
+		return {
+			type: ADD_EXPENSE,
+			expense: newExpense
+		}
+	} else {
+
+		return {
+			type: EDITED_EXPENSE,
+			expense: newExpense
+		}
 	}
 }
 
@@ -97,16 +107,47 @@ function updateExpenseState(expense) {
 // 	)
 // }
 
+export function editExpense(e,rowIndex) {
+	e.preventDefault();
+	console.log("rowIndex in editExpense " + rowIndex);
+
+	
+
+	return (dispatch, getState) => {
+
+		let images = getState().expenseList.filteredExpenses[rowIndex].images;
+
+		dispatch({
+				type: EDIT_EXPENSE,
+				edit: true,
+				dbKey: getState().expenseList.filteredExpenses[rowIndex].dbKey,
+				notes: getState().expenseList.filteredExpenses[rowIndex].notes,
+				images: (images) ? images : [],
+				date: getState().expenseList.filteredExpenses[rowIndex].date,
+			})
+
+
+	}
+}
+
 export function addExpense() {
 	return (dispatch, getState) => {
-		// Get the db key to insert it into the expense record
-		let dbKey = firebaseDb.ref("expenses").push().key;	
-		dispatch({
-			type: ADD_EXPENSE_DBKEY,
-			dbKey: dbKey
-		})
 
-		dispatch(updateExpenseState(getState().expense))
+		let dbKey;
+		if (!getState().expense.editing) {
+			// Get the db key to insert it into the expense record
+			dbKey = firebaseDb.ref("expenses").push().key;	
+			dispatch({
+				type: ADD_EXPENSE_DBKEY,
+				dbKey: dbKey
+			})
+		} else {
+			dbKey = getState().expense.dbKey;
+		}
+
+		console.log("dbKey in addExpense " + dbKey)
+
+		dispatch(updateExpenseState(getState().expense, getState().expense.editing))
 
 		if (!getState().expense.hasOwnProperty('images') || 
 			getState().expense.images.length === 0) {			

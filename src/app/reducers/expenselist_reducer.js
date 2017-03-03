@@ -6,7 +6,8 @@ import {
 	SET_ENDDATE, 
 	ADD_EXPENSE,
 	UPDATE_IMAGE,
-	REMOVE_EXPENSE, 
+	REMOVE_EXPENSE,
+	EDITED_EXPENSE, 	
 } from '../actions/types';
 
 import _ from 'lodash';
@@ -15,6 +16,31 @@ import _ from 'lodash';
 export default function (state = {}, action) {
 
     switch (action.type) {
+    	case EDITED_EXPENSE: {
+ //   		let allExpenses = [...state.allExpenses];
+ 			let allExpenses = [];
+
+    		if (action.hasOwnProperty('expense')) {
+    			//allExpenses = _.map(state.allExpenses, expense => {
+    			allExpenses = state.allExpenses.map(expense => {
+    				console.log("expense input is: " + JSON.stringify(expense, null, 2))
+    				if (expense.dbKey === action.expense.dbKey) {
+    					
+    					 //if change 1 property, can do: return expense['notes'] = action.expense.notes;    					 	
+    					 // if change multiple properties, need to return a new obj like it is here
+    					  return {...action.expense};    					 
+    				}
+    				return expense;    				
+    			})
+    		}
+
+    		console.log("allExpenses is: " + JSON.stringify(allExpenses, null, 2))
+    		return Object.assign({}, state, {
+	    		...state,	    		
+	    		allExpenses: allExpenses,
+	    		filteredExpenses: allExpenses
+	    	}) 
+    	}
     	 case ADD_EXPENSE: {
 
 	    	let prevExpenses = [];
