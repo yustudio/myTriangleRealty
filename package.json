@@ -5,7 +5,8 @@
   "main": "index.jsx",
   "scripts": {
     "dev": "./node_modules/.bin/webpack-dev-server --config ./webpack/webpack-dev.config.js --watch --colors",
-    "build": "rm -rf dist && ./node_modules/.bin/webpack --config ./webpack/webpack-prod.config.js --colors",
+    "build": "rm -rf dist && npm run buildDist",
+    "buildDist": "./node_modules/.bin/webpack --config ./webpack/webpack-prod.config.js --colors",
     "start": "node www.js", 
     "test": "./node_modules/.bin/eslint src && ./node_modules/.bin/mocha --compilers js:babel-core/register --require ./test/test_helper.js --recursive ./test",
     "test:watch": "npm run test -- --watch",
