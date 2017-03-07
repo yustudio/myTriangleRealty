@@ -33,20 +33,23 @@
 		}
 	]
 
-	"expenses" : [
-		{		
-			"date": "",
-			"notes" : "",		
-			"amount" : 0,
-			"property" : "", // uid from properties (xor with vehicle)
-			"vehicle" : "", // uid from vehicles (xor with property)
-			"paymentAcct" : ""  // uid from paymentAccts
-			"receipts": [
-				"img" : ""
-			],
-			"checkNumber": 0,  // only if paymentAcct.paymentType is checkingAcct			
-		}
-	], 
+	"expenses" : {
+		allExpenses: [
+			{		
+				"date": "",
+				"notes" : "",		
+				"amount" : 0,
+				"property" : "", // uid from properties (xor with vehicle)
+				"vehicle" : "", // uid from vehicles (xor with property)
+				"paymentAcct" : ""  // uid from paymentAccts
+				"receipts": [
+					"img" : ""
+				],
+				"checkNumber": 0,  // only if paymentAcct.paymentType is checkingAcct			
+			}
+		], 
+	],
+	
 
 	"milage" : [
 		{
